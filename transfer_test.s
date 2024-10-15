@@ -1,0 +1,16 @@
+SUB R1, R1, R1
+SUB R2, R2, R2
+SUB R3, R3, R3
+
+ADDI R1, R1, #0
+ADDI R2, R2, #0
+ADDI R3, R3, #16
+
+LDUR R1, [R1, #0]
+
+ADD R2, R1, R2
+ADD R3, R1, R3
+
+DISPLAY_KEY:    LDUR R4, [R2, #0]
+				STUR R4, [R3, #0]
+    			B DISPLAY_KEY
