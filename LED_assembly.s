@@ -2,19 +2,55 @@
 .global _start
 
 _start:
+    
+    LDR R0, =pagingfolder
+    MOV R1, #2
+    MOV R2, #0
+    MOV R7, #5
+    SVC 0 @ Chama o sistema
 
-    MOV R1, #4227858432 @ HEX FC000000 em DEC, endereco da memoria no qual e encontrada a referencia ao endereco base para os componentes (muda a cada execucao devido a questoes de virtualizacao de memoria, chamado HW_REGS_BASE no manual)
-    MOV R2, #0 @ Offset dos botoes (KEYS_BASE) em relacao a base dos componentes
-    MOV R3, #96 @ HEX 60 em DEC, offset do conjunto de LEDs 0 (HEX0_BASE) em relacao a base dos componentes
+    MOV R4, R0 @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema
+    LDR R10, =ALT_LWFPGASLVS_OFST
+    LDR R5, [R10]
 
-    LDR R1, [R1] @ Muda o valor contido em R1 da referencia ao endereco base dos perifericos para o endereco em si
-
-    ADD R2, R1, R2 @ Adiciona o offset do endereco dos botoes a base dos perifericos
-    ADD R3, R1, R3 @ Adiciona o offset do endereco conjunto de LEDs 0 a base dos perifericos
+    MOV R0, #0 @ Volta o registro R0 para 0, ja que este sera usado para avaliar se houve erro
+    MOV R1, #4096 @ Tamanho do pagina
+    MOV R2, #3 @ Leitura e escrita
+    MOV R3, #1 @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
+    MOV R7, #192 @ Codigo da chamada do sistema para mapeamento (mmap2)
+    SVC 0 @ Chama o sistema
+    CMP R0, #0
+    BGT BRIDGE_ERROR
+    
+    MOV R10, =HW_KEYS_BASE
+    MOV R11, =HW_HEX0_BASE
 
 DISPLAY_KEY:
-    LDR R4, [R2] @ Carrega o valor atual dos botoes para um registro
-    STR R4, [R3] @ Guarda o valor do registro no endereco de memoria do conjunto de LEDs 0
+    LDR R1, [R10] @ Carrega o valor atual dos botoes para um registro
+    STR R1, [R11] @ Guarda o valor do registro no endereco de memoria do conjunto de LEDs 0
     B DISPLAY_KEY @ Repete os dois comandos anteriores e este mesmo
 
-.end
+    MOV R0, #0 @ (Codigo de saida do programa 0)
+    B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
+
+BRIDGE_ERROR:
+    MOV R0, #1
+    LDR R1, =errmsgbridge
+    MOV R2, #7
+    MOV R7, #4
+    SVC 0 @ Chama o sistema
+    MOV R0, #1 @ (Codigo de saida do programa 1)
+    B END_OF_CODE @ Vai ao final do codigo
+
+END_OF_CODE:
+    MOV R7, #1
+    SVC 0 @ Chama o sistema
+
+.data
+    ALT_LWFPGASLVS_OFST:    .word   0xFF200000
+    HW_REGS_BASE:           .word   0xFC000000
+    HW_REGS_SPAN:           .word   0x04000000
+    HW_KEYS_BASE:           .word   0x0
+    HW_HEX0_BASE:           .word   0x60
+    pagingfolder:           .asciz  "/dev/mem"
+    errmsgbridge:           .ascii  "Erro: Nao foi possivel estabelecer a conexao HPS-FPGA.\n"
