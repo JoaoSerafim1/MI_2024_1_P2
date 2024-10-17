@@ -22,12 +22,14 @@ _start:
     CMP R0, #0
     BGT BRIDGE_ERROR
     
-    MOV R10, =HW_KEYS_BASE
-    MOV R11, =HW_HEX0_BASE
+    MOV R1, #0x0
+    MOV R2, #0x60
+    ADD R3, R0, R1
+    ADD R4, R0, R2
 
 DISPLAY_KEY:
-    LDR R1, [R10] @ Carrega o valor atual dos botoes para um registro
-    STR R1, [R11] @ Guarda o valor do registro no endereco de memoria do conjunto de LEDs 0
+    LDR R1, [R3] @ Carrega o valor atual dos botoes para um registro
+    STR R1, [R4] @ Guarda o valor do registro no endereco de memoria do conjunto de LEDs 0
     B DISPLAY_KEY @ Repete os dois comandos anteriores e este mesmo
 
     MOV R0, #0 @ (Codigo de saida do programa 0)
@@ -50,7 +52,7 @@ END_OF_CODE:
     ALT_LWFPGASLVS_OFST:    .word   0xFF200000
     HW_REGS_BASE:           .word   0xFC000000
     HW_REGS_SPAN:           .word   0x04000000
-    HW_KEYS_BASE:           .word   0x0
-    HW_HEX0_BASE:           .word   0x60
     pagingfolder:           .asciz  "/dev/mem"
     errmsgbridge:           .ascii  "Erro: Nao foi possivel estabelecer a conexao HPS-FPGA.\n"
+    @.equ HW_KEYS_BASE,      #0x0
+    @.equ HW_HEX0_BASE,      #0x60
