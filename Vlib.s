@@ -35,6 +35,20 @@ _start:
     LSL R10, R10, #4 @ Shift logico para a esquerda em 4 casa binarias
     ADD R9, R9, R10 @ Adiciona os dois valores binarios
 
+    MOV R10, #40      @ Valor do eixo x
+    MOV R11, #30      @ Valor do eixo y
+    LSL R11, R11, #9  @ Adapta o valor de R11 para a soma
+    ADD R10, R10, R11
+    MOV R11, #1        @ Tamanho do poligono (20x20)
+    LSL R11, #18
+    ADD R10, R10, R11
+    MOV R11, #7        @ Valor RGB (7, 0, 0)
+    LSL R11, #22
+    ADD R10, R10, R11
+    MOV R11, #0        @ Forma do poligono (Quadrado)
+    LSL R11, #31
+    ADD R10, R10, R11
+
     MOV R7, #0b0010 @ Codigo de modificar background (WBM)
     
     MOV R7, #0b111 @ Red = 7
