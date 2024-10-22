@@ -1,45 +1,47 @@
-.text
-.global _start
+.global video_box
+.type video_box, %function
 
-_start:
+video_box:
     
-    LDR R0, =pagingfolder
-    MOV R1, #2
-    MOV R2, #0
-    MOV R7, #5
-    SVC 0 @ Chama o sistema
     
-    MOV R10, R0
-    LDR R9, =ALT_LWFPGASLVS_OFST
+    DIR_OPEN_0:
+        LDR R0, =pagingfolder
+        MOV R1, #2
+        MOV R2, #0
+        MOV R7, #5
+        SVC 0       @ Chama o sistema
 
-    MOV R0, #0 @ Volta o registro R0 para 0, ja que este sera usado para avaliar se houve erro
-    MOV R1, #4096 @ Tamanho do pagina
-    MOV R2, #3 @ Leitura e escrita
-    MOV R3, #1 @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
-    MOV R4, R10 @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
-    LDR R5, [R9]
-    MOV R7, #192 @ Codigo da chamada do sistema para mapeamento (mmap2)
-    SVC 0 @ Chama o sistema
-    CMP R0, #-1
-    BEQ BRIDGE_ERROR
+    MMAP_0:
+        MOV R10, R0                     @ Copia o diretorio retornado
+        LDR R9, =ALT_LWFPGASLVS_OFST    @ Carrega o endereco da string referente ao endereco base para a paginacao
+        MOV R0, #0                      @ Volta o registro R0 para 0, ja que este sera usado para avaliar se houve erro
+        MOV R1, #4096                   @ Tamanho da pagina
+        MOV R2, #3                      @ Leitura e escrita
+        MOV R3, #1                      @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
+        MOV R4, R10                     @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
+        LDR R5, [R9]                    @ Carrega o endereco base para a paginacao
+        MOV R7, #192                    @ Codigo da chamada do sistema para mapeamento (mmap2)
+        SVC 0                           @ Chama o sistema
+        CMP R0, #-1
+        BEQ END_0
+        MOV R10, R0         @ Copia o endereco virtual base retornado
+        MOV R1, #0x80       @ Offset de DATA A
+        MOV R2, #0x70       @ Offset de DATA B
+        MOV R3, #0xc0       @ Offset de WRREG
+        @MOV R4, #0xb0      @ Offset de WRFULL
+        @MOV R5, #0xa0      @ Offset de SCREEN
+        @MOV R6, #0x90      @ Offset de RESET_PULSECOUNTER
+        ADD R1, R10, R1 @ Endereco virtual de DATA A
+        ADD R2, R10, R2 @ Endereco virtual de DATA B
+        ADD R3, R10, R3 @ Endereco virtual de WRREG
 
-    MOV R10, R0
-    MOV R1, #0x80       @ DATA A
-    MOV R2, #0x70       @ DATA B
-    MOV R3, #0xc0       @ WRREG
-    MOV R4, #0xb0       @ WRFULL
-    @MOV R5, #0xa0        SCREEN
-    @MOV R6, #0x90        RESET_PULSECOUNTER
+    DATA_A_SET_0:
+        MOV R4, #0b0011    @ Codigo de definir forma (DP)
+        STR R4, [R1, #0]   @ Guarda o valor do codigo da instrucao DP em DATA A
+        LDR R4, =SQR_POL   @ Pega o endereco da variavel da forma do poligono
+        STR R4, [R1, #4]   @ Guarda o valor do endereco do poligono em DATA A
 
-    ADD R5, R10, R1
-    ADD R6, R10, R2
-
-    MOV R9, #0b0011    @ Codigo de definir forma (DP)
-    LDR R10, =SQR_POL  @ pega o endereco da variavel
-    LSL R10, R10, #4   @ Shift logico para a esquerda em 4 casa binarias
-    ADD R9, R9, R10    @ Adiciona os dois valores binarios
-    STR R9, [R5, #0]   @ Guarda o valor da instrução na memória de DATA A
-
+    DATA_B_SET_0:
     MOV R10, #40       @ Valor do eixo x
     MOV R11, #30       @ Valor do eixo y
     LSL R11, R11, #9   @ Adapta o valor de R11 para a soma
@@ -68,7 +70,8 @@ _start:
     ADD R9, R9, R8
     STR R9, [R6, #0]     @ Guarda o valor da instrução na memória de DATA B
 
-    B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
+    END_0:
+        BX LR
 
 BRIDGE_ERROR:
     MOV R0, #1
@@ -80,7 +83,7 @@ BRIDGE_ERROR:
     B END_OF_CODE @ Vai ao final do codigo
 
 END_OF_CODE:
-    MOV R7, #1
+    MOV R7, #1 @ Codigo de chamada do sistema para sair de um programa
     SVC 0 @ Chama o sistema
 
 .data
