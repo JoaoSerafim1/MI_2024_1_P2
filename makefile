@@ -1,12 +1,12 @@
-all: LED_exec
-debug: LED_execDB
+all: video_box
+debug: video_boxDB
 
-LED_exec: LED_assembly.o
-	ld -s -o LED_exec LED_assembly.o
-	rm LED_assembly.o
+video_box: Vlib.o
+	ld -s -o video_box Vlib.o
+	rm Vlib.o
 
-LED_execDB: LED_assembly.o
-	ld -s -o LED_execDB LED_assembly.o
+video_boxDB: Vlib.o
+	ld -s -o video_boxDB Vlib.o
 	
-LED_assembly.o: LED_assembly.s
-	as LED_assembly.s -o LED_assembly.o
+Vlib.o: Vlib.s
+	as Vlib.s -o Vlib.o
