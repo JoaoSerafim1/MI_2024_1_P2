@@ -44,7 +44,7 @@ _start:
     MOV R11, #30       @ Valor do eixo y
     LSL R11, R11, #9   @ Adapta o valor de R11 para a soma
     ADD R10, R10, R11
-    MOV R11, #1        @ Tamanho do poligono (20x20)
+    MOV R11, #3        @ Tamanho do poligono (20x20)
     LSL R11, #18
     ADD R10, R10, R11
     MOV R11, #7        @ Valor RGB (7, 0, 0)
