@@ -30,14 +30,15 @@ _start:
     SCREEN:             MOV R5, #0xa0
     RESET_PULSECOUNTER: MOV R6, #0x90
 
-    MOV R9, #0b0011 @ Codigo de definir forma (DP)
-    LDR R10, =SQR_POL @ pega o endereco da variavel
-    LSL R10, R10, #4 @ Shift logico para a esquerda em 4 casa binarias
-    ADD R9, R9, R10 @ Adiciona os dois valores binarios
+    MOV R9, #0b0011    @ Codigo de definir forma (DP)
+    LDR R10, =SQR_POL  @ pega o endereco da variavel
+    LSL R10, R10, #4   @ Shift logico para a esquerda em 4 casa binarias
+    ADD R9, R9, R10    @ Adiciona os dois valores binarios
+    STR R9, [R1, #0]   @ Guarda o valor da instrução na memória de DATA A
 
-    MOV R10, #40      @ Valor do eixo x
-    MOV R11, #30      @ Valor do eixo y
-    LSL R11, R11, #9  @ Adapta o valor de R11 para a soma
+    MOV R10, #40       @ Valor do eixo x
+    MOV R11, #30       @ Valor do eixo y
+    LSL R11, R11, #9   @ Adapta o valor de R11 para a soma
     ADD R10, R10, R11
     MOV R11, #1        @ Tamanho do poligono (20x20)
     LSL R11, #18
@@ -48,15 +49,20 @@ _start:
     MOV R11, #0        @ Forma do poligono (Quadrado)
     LSL R11, #31
     ADD R10, R10, R11
+    STR R10, [R2, #0]  @ Guarda o valor da instrução na memória de DATA B
 
-    MOV R7, #0b0010 @ Codigo de modificar background (WBM)
-    
-    MOV R7, #0b111 @ Red = 7
-    MOV R8, #0b000000 @ Green = 0
-    ADD R7, R7, R8
+    MOV R7, #0b0010      @ Codigo de modificar background (WBM)
+    LDR R10, =SQR_POL    @ Pega o endereço do poligono
+    LSL R10, #4          @ Shift logico para encaixar na instrução
+    ADD R7, R7, R10      @ Adiciona o endereço à instrução
+    STR R7, [R1, #0]     @ Guarda o valor da instrução na memória de DATA A
+
+    MOV R9, #0b111       @ Red = 7
+    MOV R8, #0b000000    @ Green = 0
+    ADD R9, R9, R8
     MOV R8, #0b000000000 @ Blue = 0
-    ADD R7, R7, R8
-
+    ADD R9, R9, R8
+    STR R9, [R2, #0]     @ Guarda o valor da instrução na memória de DATA B
 
     B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
 
