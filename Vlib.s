@@ -33,6 +33,7 @@ _start:
 
     ADD R5, R10, R1
     ADD R6, R10, R2
+    ADD R7, R7, R3
 
     MOV R9, #0b0011    @ Codigo de definir forma (DP)
     LDR R10, =SQR_POL  @ pega o endereco da variavel
@@ -55,6 +56,12 @@ _start:
     ADD R10, R10, R11
     STR R10, [R6, #0]  @ Guarda o valor da instrução na memória de DATA B
 
+    MOV R11, #1
+    STR R11, [R7, #0]  @ Sinal de start
+
+    B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
+
+WBM:
     MOV R7, #0b0010      @ Codigo de modificar background (WBM)
     LDR R10, =SQR_POL    @ Pega o endereço do poligono
     LSL R10, #4          @ Shift logico para encaixar na instrução
@@ -67,8 +74,6 @@ _start:
     MOV R8, #0b000000000 @ Blue = 0
     ADD R9, R9, R8
     STR R9, [R6, #0]     @ Guarda o valor da instrução na memória de DATA B
-
-    B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
 
 BRIDGE_ERROR:
     MOV R0, #1
