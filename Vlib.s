@@ -33,7 +33,7 @@ _start:
 
     ADD R5, R10, R1
     ADD R6, R10, R2
-    ADD R7, R7, R3
+    ADD R7, R10, R3
 
     MOV R9, #0b0011    @ Codigo de definir forma (DP)
     LDR R10, =SQR_POL  @ pega o endereco da variavel
