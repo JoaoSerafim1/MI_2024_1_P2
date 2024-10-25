@@ -14,8 +14,11 @@
 .type video_dp_square_20x20, %function
 
 
+@ Argumentos: Nenhum
+@ Retorna: Caminho aberto
 file_open:
 
+    LDR R0, =pagingfolder   @ Carrega o diretorio da paginacao
     MOV R1, #2              @ Modo da edicao (leitura e escrita)
     MOV R2, #0              @ Modo do arquivo
     MOV R7, #5              @ Codigo da chamada do sistema para abrir um arquivo
@@ -23,6 +26,8 @@ file_open:
 
     BX LR   @ Sinal de fim de funcao
 
+@ Argumentos: R0 = Caminho aberto
+@ Retorna: Resultado da operacao
 file_close:
 
     MOV R7, #6              @ Codigo da chamada do sistema para fechar um arquivo
@@ -30,20 +35,23 @@ file_close:
 
     BX LR   @ Sinal de fim de funcao
 
+@ Argumentos: R0 = Caminho aberto
+@ Retorna: Endereco virtual base mapeado
 mem_map:
     MOV R10, R0                     @ Copia o diretorio para o registro 10
-    MOV R9, #0xff200                @ Copia o endereco base para a paginacao
     MOV R0, #0                      @ Volta o registro R0 para 0, ja que e um argumento da chamada
     MOV R1, #4096                   @ Tamanho da pagina
     MOV R2, #3                      @ Leitura e escrita
     MOV R3, #1                      @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
     MOV R4, R10                     @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
-    LDR R5, [R9]                    @ Carrega o endereco base para a paginacao
+    MOV R5, #0xff200                @ Copia o endereco base para a paginacao
     MOV R7, #192                    @ Codigo da chamada do sistema para mapeamento (mmap2)
     SVC 0                           @ Chama o sistema
 
     BX LR   @ Sinal de fim de funcao
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = Caminho aberto
+@ Retorna: Resultado da operacao
 mem_unmap:
     MOV R2, R1                      @ Copia o diretorio para o registro 2
     MOV R1, #4096                   @ Tamanho da pagina (4096 bits)
@@ -53,6 +61,8 @@ mem_unmap:
     BX LR   @ Sinal de fim de funcao
 
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = Offset do sprite; R2 = posicao x; R3 = posicao y; R4 = valor sp de ligar/desligar sprite
+@ Retorna: Void
 video_wbrsprite:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -73,7 +83,7 @@ video_wbrsprite:
 
     DATA_A_SET_0:
         MOV R10, #0             @ Codigo de escrever no banco de registradores (WBR)
-        MOV R11, #6             @ Registrador que guarda as informacoes do WBP/sprite (R6)
+        MOV R11, #6             @ Registrador que guarda as informacoes do WBR (R6)
         LSL R11, R11, #4        @ Desloca o registrador para seu offset final
         ADD R10, R10, R11       @ Soma o codigo com o endereco do sprite
         STR R10, [R8, #0x80]    @ Guarda o valor dos parametros da instrucao WSM que vao em DATA A
@@ -110,6 +120,8 @@ video_wbrsprite:
         BX LR   @ Sinal de fim de funcao
 
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = COR BGR
+@ Retorna: Void
 video_wbrbackground:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -122,7 +134,7 @@ video_wbrbackground:
 
     DATA_A_SET_1:
         MOV R10, #0             @ Codigo de escrever no banco de registradores (WBR)
-        MOV R11, #12            @ Registrador que guarda as informacoes do WBR/background (R12)
+        MOV R11, #6             @ Registrador que guarda as informacoes do WBR (R6)
         LSL R11, R11, #4        @ Desloca o registrador para seu offset final
         ADD R10, R10, R11       @ Soma o codigo com o endereco do sprite
         STR R10, [R8, #0x80]    @ Guarda o valor dos parametros da instrucao WBR que vao em DATA A
@@ -146,6 +158,8 @@ video_wbrbackground:
         BX LR   @ Sinal de fim de funcao
 
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = Endereco do sprite; R2 = COR BGR
+@ Retorna: Void
 video_wsm:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -181,6 +195,8 @@ video_wsm:
         BX LR   @ Sinal de fim de funcao
 
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = indice x do bloco do background (0-79); R2 = indice y do bloco do background (0-59); R3 = COR BGR
+@ Retorna: Void
 video_wbm:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -235,6 +251,8 @@ video_wbm:
         BX LR   @ Sinal de fim de funcao
 
 
+@ Argumentos: R0 = Endereco virtual base mapeado; R1 = posicao x; R2 = posicao y; R3 = COR BGR
+@ Retorna: Void
 video_dp_square_20x20:
     
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -296,5 +314,4 @@ video_dp_square_20x20:
 
 
 .data
-    ALT_LWFPGASLVS_OFST:    .word   0xff200
     pagingfolder:           .asciz  "/dev/mem"
