@@ -8,6 +8,12 @@
 .global mem_unmap
 .type mem_unmap, %function
 
+.global video_wbrsprite
+.type video_wbrsprite, %function
+.global video_wbrbackground
+.type video_wbrbackground, %function
+.global video_wsm
+.type video_wsm, %function
 .global video_wbm
 .type video_wbm, %function
 .global video_dp_square_20x20
@@ -21,7 +27,7 @@ file_open:
     LDR R0, =pagingfolder   @ Carrega o diretorio da paginacao
     MOV R1, #2              @ Modo da edicao (leitura e escrita)
     MOV R2, #0              @ Modo do arquivo
-    MOV R7, #5              @ Codigo da chamada do sistema para abrir um arquivo
+    MOV R6, #5              @ Codigo da chamada do sistema para abrir um arquivo
     SVC 0                   @ Chama o sistema
 
     BX LR   @ Sinal de fim de funcao
@@ -39,12 +45,13 @@ file_close:
 @ Retorna: Endereco virtual base mapeado
 mem_map:
     MOV R10, R0                     @ Copia o diretorio para o registro 10
+    LDR R9, =ALT_LWFPGASLVS_OFST
     MOV R0, #0                      @ Volta o registro R0 para 0, ja que e um argumento da chamada
     MOV R1, #4096                   @ Tamanho da pagina
     MOV R2, #3                      @ Leitura e escrita
     MOV R3, #1                      @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
     MOV R4, R10                     @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
-    MOV R5, #0xff200                @ Copia o endereco base para a paginacao
+    LDR R5, [R9]                @ Copia o endereco base para a paginacao
     MOV R7, #192                    @ Codigo da chamada do sistema para mapeamento (mmap2)
     SVC 0                           @ Chama o sistema
 
@@ -62,7 +69,7 @@ mem_unmap:
 
 
 @ Argumentos: R0 = Endereco virtual base mapeado; R1 = Offset do sprite; R2 = posicao x; R3 = posicao y; R4 = valor sp de ligar/desligar sprite
-@ Retorna: Void
+@ Retorna: Resultado da operacao
 video_wbrsprite:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -70,12 +77,12 @@ video_wbrsprite:
     CHK_PARAM_0:
         CMP R2, #0      @ Verifica se a posicao x e menor que 0
         BLT ERR_0a      @ Caso seja, deu erro
-        CMP R2, #639    @ Verifica se a posicao x e maior que 639
-        BGT ERR_0a      @ Caso seja, deu erro
+        @CMP R2, #639    @ Verifica se a posicao x e maior que 639
+        @BGT ERR_0a      @ Caso seja, deu erro
         CMP R3, #0      @ Verifica se a posicao y e menor que 0
         BLT ERR_0b      @ Caso seja, deu erro
-        CMP R3, #479    @ Verifica se a posicao y e maior que 479
-        BGT ERR_0b      @ Caso seja, deu erro
+        @CMP R3, #479    @ Verifica se a posicao y e maior que 479
+        @BGT ERR_0b      @ Caso seja, deu erro
         CMP R4, #0      @ Verifica se sp e menor que 0
         BLT ERR_0c      @ Caso seja, deu erro
         CMP R4, #1      @ Verifica se sp e maior que 1
@@ -121,7 +128,7 @@ video_wbrsprite:
 
 
 @ Argumentos: R0 = Endereco virtual base mapeado; R1 = COR BGR
-@ Retorna: Void
+@ Retorna: Resultado da operacao
 video_wbrbackground:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -159,7 +166,7 @@ video_wbrbackground:
 
 
 @ Argumentos: R0 = Endereco virtual base mapeado; R1 = Endereco do sprite; R2 = COR BGR
-@ Retorna: Void
+@ Retorna: Resultado da operacao
 video_wsm:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -196,7 +203,7 @@ video_wsm:
 
 
 @ Argumentos: R0 = Endereco virtual base mapeado; R1 = indice x do bloco do background (0-79); R2 = indice y do bloco do background (0-59); R3 = COR BGR
-@ Retorna: Void
+@ Retorna: Resultado da operacao
 video_wbm:
 
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -212,13 +219,13 @@ video_wbm:
         BGT ERR_3b      @ Caso seja, deu erro
         CMP R3, #0      @ Verifica se a cor e menor que 0
         BLT ERR_3c      @ Caso seja, deu erro
-        CMP R3, #511    @ Verifica se a cor e maior que 511
-        BGT ERR_3c      @ Caso seja, deu erro
+        @CMP R3, #511    @ Verifica se a cor e maior que 511
+        @BGT ERR_3c      @ Caso seja, deu erro
 
     SQR_INDEX:
-        MOV R9, #80     @ Tamanho da linha (numero de colunas por linha)
-        MUL R9, R9, R2  @ Multiplica pelo indice da posicao y
-        ADD R9, R9, R1  @ Soma com o indice da posicao x
+        MOV R9, #80         @ Tamanho da linha (numero de colunas por linha)
+        MUL R10, R9, R2     @ Multiplica pelo indice da posicao y
+        ADD R10, R10, R1    @ Soma com o indice da posicao x
 
     DATA_A_SET_3:
         MOV R10, #0b0010        @ Codigo de escrever na memoria de background (WBM)
@@ -252,7 +259,7 @@ video_wbm:
 
 
 @ Argumentos: R0 = Endereco virtual base mapeado; R1 = posicao x; R2 = posicao y; R3 = COR BGR
-@ Retorna: Void
+@ Retorna: Resultado da operacao
 video_dp_square_20x20:
     
     MOV R8, R0  @ Copia o valor de R0 para R8
@@ -260,12 +267,12 @@ video_dp_square_20x20:
     CHK_PARAM_4:
         CMP R1, #0      @ Verifica se a posicao x e menor que 0
         BLT ERR_4a      @ Caso seja, deu erro
-        CMP R1, #639    @ Verifica se a posicao x e maior que 639
-        BGT ERR_4a      @ Caso seja, deu erro
+        @CMP R1, #639    @ Verifica se a posicao x e maior que 639
+        @BGT ERR_4a      @ Caso seja, deu erro
         CMP R2, #0      @ Verifica se a posicao y e menor que 0
         BLT ERR_4b      @ Caso seja, deu erro
-        CMP R2, #479    @ Verifica se a posicao y e maior que 479
-        BGT ERR_4b      @ Caso seja, deu erro
+        @CMP R2, #479    @ Verifica se a posicao y e maior que 479
+        @BGT ERR_4b      @ Caso seja, deu erro
         CMP R3, #0      @ Verifica se a cor e menor que 0
         BLT ERR_4c      @ Caso seja, deu erro
         CMP R3, #0      @ Verifica se a cor e maior que 511
@@ -315,3 +322,4 @@ video_dp_square_20x20:
 
 .data
     pagingfolder:           .asciz  "/dev/mem"
+    ALT_LWFPGASLVS_OFST:    .word   0xff200
