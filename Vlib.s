@@ -1,8 +1,8 @@
-.text
-.global _start
+.global DP
+.type DP, %function
 
-_start:
-    
+@testando a instrução DP
+DP:
     LDR R0, =pagingfolder
     MOV R1, #2
     MOV R2, #0
@@ -41,8 +41,8 @@ _start:
     ADD R9, R9, R10    @ Adiciona os dois valores binarios
     STR R9, [R5, #0]   @ Guarda o valor da instrução na memória de DATA A
 
-    MOV R10, #40       @ Valor do eixo x
-    MOV R11, #30       @ Valor do eixo y
+    MOV R10, #80       @ Valor do eixo x
+    MOV R11, #50       @ Valor do eixo y
     LSL R11, R11, #9   @ Adapta o valor de R11 para a soma
     ADD R10, R10, R11
     MOV R11, #3        @ Tamanho do poligono (20x20)
@@ -58,6 +58,7 @@ _start:
 
     MOV R11, #1
     STR R11, [R7, #0]  @ Sinal de start
+
 
     B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
 
