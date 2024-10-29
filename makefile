@@ -1,8 +1,4 @@
-all: teste
-debug: video_boxDB
-
-video_box: Vlib.o
-	ld -s -o video_box Vlib.o
+all: teste video_boxDB
 
 teste: Vlib.o test.o
 	gcc Vlib.o test.o -o teste
@@ -10,7 +6,7 @@ teste: Vlib.o test.o
 video_boxDB: Vlib.o
 	ld -s -o video_boxDB Vlib.o
 	
-test.o:
+test.o: test.c
 	gcc -c test.c -o test.o
 
 Vlib.o: Vlib.s
