@@ -153,9 +153,12 @@ WBM:
 
     B END_OF_CODE
 
-@ Argumentos: R0 = COR BGR
+@ Argumentos: R0 = COR BGR, R1 = Registrador
 @ Retorna: Resultado da operacao
 WBR:
+    
+    SUB sp, sp, #12
+    STR R0, [sp, #0]
 
     MOV R11, R0    @ Salva o valor de RGB
 
@@ -179,6 +182,8 @@ WBR:
     CMP R0, #-1
     BEQ BRIDGE_ERROR
 
+    
+
     MOV R10, R0
     MOV R1, #0x80       @ DATA A
     MOV R2, #0x70       @ DATA B
@@ -190,18 +195,19 @@ WBR:
     ADD R5, R10, R1
     ADD R6, R10, R2
     ADD R8, R10, R3
-
-    MOV R4, R11         @ Salva o valor de RGB
+    
+    LDR R0, [sp, #0]
+    ADD sp, sp, #12
 
     DATA_A_SET_1:
-        MOV R10, #0             @ Codigo de escrever no banco de registradores (WBR)
-        MOV R11, #6             @ Registrador que guarda as informacoes do WBR (R6)
+        MOV R10, #0b0000       @ Codigo de escrever no banco de registradores (WBR)
+        MOV R11, #0            @ Registrador que guarda as informacoes do WBR (R6)
         LSL R11, R11, #4        @ Desloca o registrador para seu offset final
         ADD R10, R10, R11       @ Soma o codigo com o endereco do sprite
         STR R10, [R5, #0]    @ Guarda o valor dos parametros da instrucao WBR que vao em DATA A
 
     DATA_B_SET_1:
-        STR R4, [R6, #0]     @ Guarda o valor dos parametros da instrucao WBR que vao em DATA B (cor BGR)
+        STR R0, [R6, #0]     @ Guarda o valor dos parametros da instrucao WBR que vao em DATA B (cor BGR)
 
     DATA_SEND_1:
         MOV R10, #1             @ Valor para fazer execucao da instrucao
