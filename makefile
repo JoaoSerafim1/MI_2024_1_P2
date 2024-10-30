@@ -1,10 +1,9 @@
-all: teste video_boxDB
+all: teste
 
 teste: Vlib.o test.o
 	gcc Vlib.o test.o -o teste
-
-video_boxDB: Vlib.o
-	ld -s -o video_boxDB Vlib.o
+	rm test.o
+	rm Vlib.o
 	
 test.o: test.c
 	gcc -c test.c -o test.o

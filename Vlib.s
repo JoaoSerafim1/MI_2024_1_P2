@@ -1,8 +1,16 @@
 .global DP
 .type DP, %function
 
-@testando a instrução DP
+@testando DP
 DP:
+    SUB sp, sp, #20
+    STR R0, [sp, #16]
+    STR R1, [sp, #12]
+    STR R2, [sp, #8]
+    STR R3, [sp, #4]
+    STR R4, [sp, #0]
+
+
     LDR R0, =pagingfolder
     MOV R1, #2
     MOV R2, #0
@@ -33,7 +41,7 @@ DP:
 
     ADD R5, R10, R1
     ADD R6, R10, R2
-    ADD R7, R10, R3
+    ADD R8, R10, R3
 
     MOV R9, #0b0011    @ Codigo de definir forma (DP)
     LDR R10, =SQR_POL  @ pega o endereco da variavel
@@ -41,24 +49,33 @@ DP:
     ADD R9, R9, R10    @ Adiciona os dois valores binarios
     STR R9, [R5, #0]   @ Guarda o valor da instrução na memória de DATA A
 
-    MOV R10, #80       @ Valor do eixo x
-    MOV R11, #50       @ Valor do eixo y
+    LDR R4, [sp, #20]
+    LDR R3, [sp, #4]
+    LDR R2, [sp, #8]
+    LDR R1, [sp, #12]
+    LDR R0, [sp, #16]
+    ADD sp, sp, #16
+
+    MOV R10, R0      @ Valor do eixo x
+    MOV R11, R1       @ Valor do eixo y
     LSL R11, R11, #9   @ Adapta o valor de R11 para a soma
     ADD R10, R10, R11
-    MOV R11, #3        @ Tamanho do poligono (20x20)
+    MOV R11, R4        @ Tamanho do poligono (20x20)
     LSL R11, #18
     ADD R10, R10, R11
-    MOV R11, #7        @ Valor RGB (7, 0, 0)
+    MOV R11, R2        @ Valor RGB
     LSL R11, #22
     ADD R10, R10, R11
-    MOV R11, #0        @ Forma do poligono (Quadrado)
+    MOV R11, R3        @ Forma do poligono
     LSL R11, #31
     ADD R10, R10, R11
     STR R10, [R6, #0]  @ Guarda o valor da instrução na memória de DATA B
 
     MOV R11, #1
-    STR R11, [R7, #0]  @ Sinal de start
+    STR R11, [R8, #0]  @ Sinal de start
 
+    MOV R11, #0
+    STR R11, [R8, #0]  @ Sinal de start
 
     B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
 
