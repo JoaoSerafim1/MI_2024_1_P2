@@ -1,5 +1,9 @@
 .global DP
 .type DP, %function
+.global WBM
+.type WBM, %function
+.global WBR
+.type WBR, %function
 
 @testando DP
 DP:
@@ -79,19 +83,134 @@ DP:
 
     B END_OF_CODE @ Vai ao final do codigo, nao chega aqui, porem ja esta para redirecionar qualquer codigo que chegar ao final da execucao
 
-WBM:
-    MOV R7, #0b0010      @ Codigo de modificar background (WBM)
-    LDR R10, =SQR_POL    @ Pega o endereço do poligono
-    LSL R10, #4          @ Shift logico para encaixar na instrução
-    ADD R7, R7, R10      @ Adiciona o endereço à instrução
-    STR R7, [R5, #0]     @ Guarda o valor da instrução na memória de DATA A
 
-    MOV R9, #0b111       @ Red = 7
-    MOV R8, #0b000000    @ Green = 0
-    ADD R9, R9, R8
-    MOV R8, #0b000000000 @ Blue = 0
-    ADD R9, R9, R8
-    STR R9, [R6, #0]     @ Guarda o valor da instrução na memória de DATA B
+@ Argumentos: R0 = indice x do bloco do background (0-79); R1 = indice y do bloco do background (0-59); R2 = COR BGR
+@ Retorna: Resultado da operacao
+WBM:
+
+    SUB sp, sp, #12
+    STR R0, [sp, #8]
+    STR R1, [sp, #4]
+    STR R2, [sp, #0]
+
+
+    LDR R0, =pagingfolder
+    MOV R1, #2
+    MOV R2, #0
+    MOV R7, #5
+    SVC 0 @ Chama o sistema
+    
+    MOV R10, R0
+    LDR R9, =ALT_LWFPGASLVS_OFST
+
+    MOV R0, #0 @ Volta o registro R0 para 0, ja que este sera usado para avaliar se houve erro
+    MOV R1, #4096 @ Tamanho do pagina
+    MOV R2, #3 @ Leitura e escrita
+    MOV R3, #1 @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
+    MOV R4, R10 @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
+    LDR R5, [R9]
+    MOV R7, #192 @ Codigo da chamada do sistema para mapeamento (mmap2)
+    SVC 0 @ Chama o sistema
+    CMP R0, #-1
+    BEQ BRIDGE_ERROR
+
+    MOV R10, R0
+    MOV R1, #0x80       @ DATA A
+    MOV R2, #0x70       @ DATA B
+    MOV R3, #0xc0       @ WRREG
+    MOV R4, #0xb0       @ WRFULL
+    @MOV R5, #0xa0        SCREEN
+    @MOV R6, #0x90        RESET_PULSECOUNTER
+
+    ADD R5, R10, R1
+    ADD R6, R10, R2
+    ADD R8, R10, R3
+
+    LDR R2, [sp, #0]
+    LDR R1, [sp, #4]
+    LDR R0, [sp, #8]
+    ADD sp, sp, #12
+
+    SQR_INDEX:
+        MOV R9, #80         @ Tamanho da linha (numero de colunas por linha)
+        MUL R10, R9, R1     @ Multiplica pelo indice da posicao y
+        ADD R11, R10, R0    @ Soma com o indice da posicao x
+
+    DATA_A_SET_3:
+        MOV R10, #0b0010        @ Codigo de escrever na memoria de background (WBM)
+        LSL R11, R11, #4         @ Desloca o indice do poligono para seu offset final
+        ADD R10, R10, R11       @ Soma o codigo com o indice do poligono
+        STR R10, [R5, #0]    @ Guarda o valor dos parametros da instrucao DP que vao em DATA A
+
+    DATA_B_SET_3:
+        STR R2, [R6, #0]     @ Guarda o valor dos parametros da instrucao DP que vao em DATA B (cor BGR)
+
+    DATA_SEND_3:
+        MOV R10, #1             @ Valor para fazer execucao da instrucao
+        STR R10, [R8, #0]    @ Guarda o valor de execucao em WRREG
+        MOV R10, #0             @ Valor para resetar o mecanismo da instrucao
+        STR R10, [R8, #0]    @ Guarda o valor de execucao em WRREG
+
+    B END_OF_CODE
+
+@ Argumentos: R0 = COR BGR
+@ Retorna: Resultado da operacao
+WBR:
+
+    MOV R11, R0    @ Salva o valor de RGB
+
+    LDR R0, =pagingfolder
+    MOV R1, #2
+    MOV R2, #0
+    MOV R7, #5
+    SVC 0 @ Chama o sistema
+    
+    MOV R10, R0
+    LDR R9, =ALT_LWFPGASLVS_OFST
+
+    MOV R0, #0 @ Volta o registro R0 para 0, ja que este sera usado para avaliar se houve erro
+    MOV R1, #4096 @ Tamanho do pagina
+    MOV R2, #3 @ Leitura e escrita
+    MOV R3, #1 @ Modo MAP_SHARED, automaticamente guarda todas as alteracoes feitas na regiao mapeada na pagina
+    MOV R4, R10 @ Copia o caminho de paginacao para o registro que corresponde ao argumento da chamada de sistema 
+    LDR R5, [R9]
+    MOV R7, #192 @ Codigo da chamada do sistema para mapeamento (mmap2)
+    SVC 0 @ Chama o sistema
+    CMP R0, #-1
+    BEQ BRIDGE_ERROR
+
+    MOV R10, R0
+    MOV R1, #0x80       @ DATA A
+    MOV R2, #0x70       @ DATA B
+    MOV R3, #0xc0       @ WRREG
+    @MOV R4, #0xb0       @ WRFULL
+    @MOV R5, #0xa0        SCREEN
+    @MOV R6, #0x90        RESET_PULSECOUNTER
+
+    ADD R5, R10, R1
+    ADD R6, R10, R2
+    ADD R8, R10, R3
+
+    MOV R4, R11         @ Salva o valor de RGB
+
+    DATA_A_SET_1:
+        MOV R10, #0             @ Codigo de escrever no banco de registradores (WBR)
+        MOV R11, #6             @ Registrador que guarda as informacoes do WBR (R6)
+        LSL R11, R11, #4        @ Desloca o registrador para seu offset final
+        ADD R10, R10, R11       @ Soma o codigo com o endereco do sprite
+        STR R10, [R5, #0]    @ Guarda o valor dos parametros da instrucao WBR que vao em DATA A
+
+    DATA_B_SET_1:
+        STR R4, [R6, #0]     @ Guarda o valor dos parametros da instrucao WBR que vao em DATA B (cor BGR)
+
+    DATA_SEND_1:
+        MOV R10, #1             @ Valor para fazer execucao da instrucao
+        STR R10, [R8, #0]    @ Guarda o valor de execucao em WRREG
+        MOV R10, #0             @ Valor para resetar o mecanismo da instrucao
+        STR R10, [R8, #0]    @ Guarda o valor de execucao em WRREG
+
+    B END_OF_CODE
+
 
 BRIDGE_ERROR:
     MOV R0, #1
