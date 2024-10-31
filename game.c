@@ -7,6 +7,9 @@
 //Biblioteca time, implementada por padrao em LINUX e Windows
 #include <sys/time.h>
 
+//Biblioteca original de controle da GPU customizada
+#include "test_lib.h"
+
 //Biblioteca original de mapeamento da memoria do dispositivo DE1-SoC com Linux embutido
 #include "map.c"
 
@@ -14,7 +17,6 @@
 #include <pthread.h>
 
 //Bibliotecas inclusas com o dispositivo DE1-SoC, para controle de perifericos
-#include <intelfpgaup/video.h>
 #include <intelfpgaup/SW.h>
 #include <intelfpgaup/KEY.h>
 
@@ -91,54 +93,45 @@ void une_matriz(int (*tela)[10][24], int estatico[10][24], int peca[4][4], int p
 }
 
 
-//Funcao que desenha uma matriz 10x24 em uma tela 320x240, preenchendo a altura da tela e centralizada na largura da mesma
+//Funcao que desenha uma matriz 10x24 em uma tela 640x480, preenchendo a altura da tela e centralizada na largura da mesma
 void desenha_matriz(int t[10][24]){
   int cont0;
   int cont1;
-  int posx1, posx2;
-  int posy1, posy2;
-
-  video_clear();
-
-  char mensagem_limpar[32] = "                                ";
-  video_text(30, 30, mensagem_limpar);
-  video_text(28, 0, mensagem_limpar);
-  video_text(28, 1, mensagem_limpar);
+  int posx2;
+  int posy2;
 
   for(cont0 = 0; cont0 < 10; cont0++) {
     
     for(cont1 = 0; cont1 < 24; cont1++){
-      posx1 = (cont0 * 10) + 110;
-      posy1 = (cont1 * 10);
-      posx2 = ((cont0 + 1) * 10 ) + 109;
-      posy2 = ((cont1 + 1) * 10) - 1;
+      posx2 = ((cont0 + 1) * 20 ) + 219;
+      posy2 = ((cont1 + 1) * 20) - 1;
       
       if (t[cont0][cont1] == 0) {
-        video_box(posx1, posy1, posx2, posy2, video_GREY);
+        DP(posx2, posy2, 292, 0, 1); //Cinza
       }
       else if(t[cont0][cont1] == 1) {
-        video_box(posx1, posy1, posx2, posy2, video_RED);
+        DP(posx2, posy2, 7, 0, 1); //Vermelho
       }
       else if(t[cont0][cont1] == 2) {
-        video_box(posx1, posy1, posx2, posy2, video_ORANGE);
+        DP(posx2, posy2, 39, 0, 1); //Laranja
       }
       else if(t[cont0][cont1] == 3) {
-        video_box(posx1, posy1, posx2, posy2, video_PINK);
+        DP(posx2, posy2, 263, 0, 1); //Rosa
       }
       else if(t[cont0][cont1] == 4) {
-        video_box(posx1, posy1, posx2, posy2, video_YELLOW);
+        DP(posx2, posy2, 63, 0, 1); //Amarelo
       }
       else if(t[cont0][cont1] == 5) {
-        video_box(posx1, posy1, posx2, posy2, video_GREEN);
+        DP(posx2, posy2, 56, 0, 1); //Verde
       }
       else if(t[cont0][cont1] == 6) {
-        video_box(posx1, posy1, posx2, posy2, video_CYAN);
+        DP(posx2, posy2, 504, 0, 1); //Ciano
       }
       else if(t[cont0][cont1] == 7) {
-        video_box(posx1, posy1, posx2, posy2, video_BLUE);
+        DP(posx2, posy2, 448, 0, 1); //Azul
       }
       else if(t[cont0][cont1] == 8) {
-        video_box(posx1, posy1, posx2, posy2, video_MAGENTA);
+        DP(posx2, posy2, 455, 0, 1); //Magenta
       }
     }
   }
@@ -149,23 +142,29 @@ void desenha_matriz(int t[10][24]){
 void desenha_pontos(int pontos){
   
   //Converte int em array de caracteres de ate 32 caracteres (o que cabe na tela apartir da posicao inicial)
-  char int_array[32];
+  /*char int_array[32];
   sprintf(int_array, "%d", pontos*100);
 
   char mensagem_pontos[7] = "PONTOS:";
 
   video_text(28, 0, mensagem_pontos);
-  video_text(28, 1, int_array);
+  video_text(28, 1, int_array);*/
 }
 
-//Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 320x240
+//Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 640x480
 void desenha_estado(int estado_jogo, int linha_limite) {
+  int cont0;
 
   //Desenha a linha limite da area de jogo
-  video_box((110), (linha_limite * 10), (209), (((linha_limite + 1) * 10) - 1), video_WHITE);
+  //video_box((110), (linha_limite * 10), (209), (((linha_limite + 1) * 10) - 1), video_WHITE);
+  for(cont0 = 0; cont0 < 10; cont0++){
+    posx = ((cont0 + 1) * 20 ) + 219;
+
+    DP(posx, (((linha_limite + 1) * 20) - 1), 511, 0, 1); //Branco
+  }
 
   //Exibe as mensagens de estado de jogo para "pausa" e "fim de jogo"
-  if(estado_jogo == 1) {
+  /*if(estado_jogo == 1) {
 
     char mensagem_estado[12] = "JOGO PAUSADO";
     video_text(34, 30, mensagem_estado);
@@ -177,7 +176,7 @@ void desenha_estado(int estado_jogo, int linha_limite) {
   }
 
   video_show();
-  video_clear();
+  video_clear();*/
 }
 
 //Funcao que consolida as funcoes de atualizacao da tela
@@ -370,8 +369,8 @@ int ler_comando() {
   } //Estado de reset
   else if ((switch_value == 2) || (switch_value == 3)) {
     estado = 2;
-    video_clear();
-    video_erase();
+    //video_clear();
+    //video_erase();
   }
   //Estado inicial = 3
 
@@ -394,15 +393,14 @@ int ler_reset() {
 int tela_inicial(){
   
   //Background
-  video_box(110, 0, 210, 239, video_GREY);
+  WBR_BACKGROUND(511);
 
   //Titulo do jogo
-  char nome_jogo[12] = "TETRIS 2024";
+  /*char nome_jogo[12] = "TETRIS 2024";
   video_text(35, 30, nome_jogo);
 
   video_show();
-  video_clear();
-
+  video_clear();*/
 }
 
 
@@ -455,8 +453,8 @@ int main ( void ) {
   //Linha limite (minima de cima para baixo) para colocacao das pecas
   int linha_limite = 7;
 
-  video_open();
-  video_erase();
+  //video_open();
+  //video_erase();
   //Loop externo que serve para reiniciar o game caso o interno seja quebrado
   while(1 == 1) {
     
@@ -655,7 +653,7 @@ int main ( void ) {
     }
   }
 
-  video_close();
+  //video_close();
   unmap_physical(I2C0_virtual, I2C0_SPAN);
   close_physical(fd);
 }
