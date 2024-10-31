@@ -6,7 +6,7 @@ tetrisg4: Vlib.o game.o
 	rm Vlib.o
 	
 game.o: game.c
-	gcc -c game.c -o game.o
+	gcc -c game.c -o game.o -lintelfpgaup -lpthread
 
 Vlib.o: Vlib.s
 	as Vlib.s -o Vlib.o
