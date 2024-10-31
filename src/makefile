@@ -1,12 +1,12 @@
-all: teste
+all: tetrisg4
 
-teste: Vlib.o test.o
-	gcc Vlib.o test.o -o teste
-	rm test.o
+tetrisg4: Vlib.o game.o
+	gcc Vlib.o game.o -o tetrisg4
+	rm game.o
 	rm Vlib.o
 	
-test.o: test.c
-	gcc -c test.c -o test.o
+game.o: game.c
+	gcc -c game.c -o game.o
 
 Vlib.o: Vlib.s
 	as Vlib.s -o Vlib.o
