@@ -1,5 +1,5 @@
-#ifndef test_lib.h
-#define test_lib.h
+#ifndef vlib.h
+#define vlib.h
 
 extern void DP(unsigned int x, unsigned int y, unsigned int cor, unsigned int forma, unsigned int tamanho);
 
