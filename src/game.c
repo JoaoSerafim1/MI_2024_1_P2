@@ -8,7 +8,7 @@
 #include <sys/time.h>
 
 //Biblioteca original de controle da GPU customizada
-#include "test_lib.h"
+#include "vlib.h"
 
 //Biblioteca original de mapeamento da memoria do dispositivo DE1-SoC com Linux embutido
 #include "map.c"
