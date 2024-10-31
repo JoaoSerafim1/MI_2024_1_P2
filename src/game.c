@@ -97,26 +97,46 @@ void une_matriz(int (*tela)[10][24], int estatico[10][24], int peca[4][4], int p
 void desenha_matriz(int t[10][24]){
   int cont0;
   int cont1;
+  int posx1;
+  int posy1;
   int posx2;
   int posy2;
 
   for(cont0 = 0; cont0 < 10; cont0++) {
     
     for(cont1 = 0; cont1 < 24; cont1++){
-      posx2 = ((cont0 + 1) * 20 ) + 219;
-      posy2 = ((cont1 + 1) * 20) - 1;
+      posx1 = ((cont0 * 2) + 35);
+      posy1 = (cont1 * 2);
+      posx2 = (posx1 + 1);
+      posy2 = (posy1 + 1);
       
+      //Cinza
       if (t[cont0][cont1] == 0) {
-        DP(posx2, posy2, 292, 0, 1); //Cinza
+        WBM(posx1, posy1, 292);
+        WBM(posx1, posy2, 292);
+        WBM(posx2, posy1, 292);
+        WBM(posx2, posy2, 292);
       }
+      //Vermelho
       else if(t[cont0][cont1] == 1) {
-        DP(posx2, posy2, 7, 0, 1); //Vermelho
+        WBM(posx1, posy1, 7);
+        WBM(posx1, posy2, 7);
+        WBM(posx2, posy1, 7);
+        WBM(posx2, posy2, 7);
       }
+      //Laranja
       else if(t[cont0][cont1] == 2) {
-        DP(posx2, posy2, 39, 0, 1); //Laranja
+        WBM(posx1, posy1, 39);
+        WBM(posx1, posy2, 39);
+        WBM(posx2, posy1, 39);
+        WBM(posx2, posy2, 39);
       }
+      //Rosa
       else if(t[cont0][cont1] == 3) {
-        DP(posx2, posy2, 263, 0, 1); //Rosa
+        WBM(posx1, posy1, 263);
+        WBM(posx1, posy2, 263);
+        WBM(posx2, posy1, 263);
+        WBM(posx2, posy2, 263);
       }
       else if(t[cont0][cont1] == 4) {
         DP(posx2, posy2, 63, 0, 1); //Amarelo
@@ -154,6 +174,7 @@ void desenha_pontos(int pontos){
 //Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 640x480
 void desenha_estado(int estado_jogo, int linha_limite) {
   int cont0;
+  int posx;
 
   //Desenha a linha limite da area de jogo
   //video_box((110), (linha_limite * 10), (209), (((linha_limite + 1) * 10) - 1), video_WHITE);
