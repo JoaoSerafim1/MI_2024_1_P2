@@ -1,12 +1,16 @@
-all: teste
+all: tetrisg4
 
-teste: Vlib.o test.o
-	gcc Vlib.o test.o -o teste
-	rm test.o
-	rm Vlib.o
-	
-test.o: test.c
-	gcc -c test.c -o test.o
+tetrisg4: vlib.o prplib.o game.o
+	gcc vlib.o game.o prplib.o -o tetrisg4 -lpthread
+	rm vlib.o
+	rm prplib.o
+	rm game.o
 
-Vlib.o: Vlib.s
-	as Vlib.s -o Vlib.o
+vlib.o: vlib.s
+	as vlib.s -o vlib.o
+
+prplib.o: prplib.s
+	as prplib.s -o prplib.o
+
+game.o: game.c
+	gcc -c game.c -o game.o -lpthread
