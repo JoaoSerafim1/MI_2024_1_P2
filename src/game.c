@@ -4,21 +4,20 @@
 # include <unistd.h>
 # include <time.h>
 
-//Biblioteca time, implementada por padrao em LINUX e Windows
+//Biblioteca sys-time, implementada por padrao em LINUX e Windows
 #include <sys/time.h>
-
-//Biblioteca original de controle da GPU customizada
-#include "vlib.h"
-
-//Biblioteca original de mapeamento da memoria do dispositivo DE1-SoC com Linux embutido
-#include "map.c"
 
 //Biblioteca de criacao e gerenciamento de threads para Linux
 #include <pthread.h>
 
-//Bibliotecas inclusas com o dispositivo DE1-SoC, para controle de perifericos
-#include <intelfpgaup/SW.h>
-#include <intelfpgaup/KEY.h>
+//Biblioteca original de mapeamento da memoria do dispositivo DE1-SoC com Linux embutido
+#include "map.c"
+
+//Biblioteca original de controle da GPU customizada
+#include "vlib.h"
+
+//Biblioteca original de interface com os perifericos
+include "prplib.h"
 
 int16_t X_inicial = 0;
 int16_t aceleracaoX = 0;
@@ -93,7 +92,7 @@ void une_matriz(int (*tela)[10][24], int estatico[10][24], int peca[4][4], int p
 }
 
 
-//Funcao que desenha uma matriz 10x24 em uma tela 640x480, preenchendo a altura da tela e centralizada na largura da mesma
+//Funcao que desenha uma matriz 10x24 em uma tela 640x480 (indexada em 80x60), centralizada na largura e altura da mesma
 void desenha_matriz(int t[10][24]){
   int cont0;
   int cont1;
@@ -106,7 +105,7 @@ void desenha_matriz(int t[10][24]){
     
     for(cont1 = 0; cont1 < 24; cont1++){
       posx1 = ((cont0 * 2) + 35);
-      posy1 = (cont1 * 2);
+      posy1 = ((cont1 * 2) + 1);
       posx2 = (posx1 + 1);
       posy2 = (posy1 + 1);
       
@@ -138,20 +137,40 @@ void desenha_matriz(int t[10][24]){
         WBM(posx2, posy1, 263);
         WBM(posx2, posy2, 263);
       }
+      //Amarelo
       else if(t[cont0][cont1] == 4) {
-        DP(posx2, posy2, 63, 0, 1); //Amarelo
+        WBM(posx1, posy1, 63);
+        WBM(posx1, posy2, 63);
+        WBM(posx2, posy1, 63);
+        WBM(posx2, posy2, 63);
       }
+      //Verde
       else if(t[cont0][cont1] == 5) {
-        DP(posx2, posy2, 56, 0, 1); //Verde
+        WBM(posx1, posy1, 56);
+        WBM(posx1, posy2, 56);
+        WBM(posx2, posy1, 56);
+        WBM(posx2, posy2, 56);
       }
+      //Ciano
       else if(t[cont0][cont1] == 6) {
-        DP(posx2, posy2, 504, 0, 1); //Ciano
+        WBM(posx1, posy1, 504);
+        WBM(posx1, posy2, 504);
+        WBM(posx2, posy1, 504);
+        WBM(posx2, posy2, 504);
       }
+      //Azul
       else if(t[cont0][cont1] == 7) {
-        DP(posx2, posy2, 448, 0, 1); //Azul
+        WBM(posx1, posy1, 448);
+        WBM(posx1, posy2, 448);
+        WBM(posx2, posy1, 448);
+        WBM(posx2, posy2, 448);
       }
+      //Magenta
       else if(t[cont0][cont1] == 8) {
-        DP(posx2, posy2, 455, 0, 1); //Magenta
+        WBM(posx1, posy1, 455);
+        WBM(posx1, posy2, 455);
+        WBM(posx2, posy1, 455);
+        WBM(posx2, posy2, 455);
       }
     }
   }
@@ -174,14 +193,18 @@ void desenha_pontos(int pontos){
 //Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 640x480
 void desenha_estado(int estado_jogo, int linha_limite) {
   int cont0;
-  int posx;
+  int posx1;
+  int posx2;
 
   //Desenha a linha limite da area de jogo
   //video_box((110), (linha_limite * 10), (209), (((linha_limite + 1) * 10) - 1), video_WHITE);
-  for(cont0 = 0; cont0 < 10; cont0++){
-    posx = ((cont0 + 1) * 20 ) + 219;
+  for(cont0 = 0; cont0 < 20; cont0++){
+    posx1 = ((cont0 * 2) + 35);
+    posx2 = (posx1 + 1);
 
-    DP(posx, (((linha_limite + 1) * 20) - 1), 511, 0, 1); //Branco
+    //Branco
+    WBM(posx1, ((linha_limite * 2) + 2), 511, 0, 1);
+    WBM(posx2, ((linha_limite * 2) + 2), 511, 0, 1);
   }
 
   //Exibe as mensagens de estado de jogo para "pausa" e "fim de jogo"
@@ -373,29 +396,24 @@ int ler_movimento() {
 
 
 //Funcao que le a entrada atual de chaves para controle do game
-int ler_comando() {
-  int estado;
-  int switch_value;
+int ler_comando(estado_jogo) {
 
-  SW_open();
-  SW_read(&switch_value);
-  SW_close();
+  int switch_value = RDBT();
 
-  //Estado pausado
-  if (switch_value == 1) {
-    estado = 1;
-  }//Estado despausadado
-  else if (switch_value == 0) {
-    estado = 0;
-  } //Estado de reset
+  //Entrar em pausa
+  if ((switch_value == 1) && (estado_jogo == 0)) {
+    estado_jogo = 1;
+  }//Sair da pausa
+  else if ((switch_value == 1) && (estado_jogo == 1)) {
+    estado_jogo = 0;
+  } //Resetar
   else if ((switch_value == 2) || (switch_value == 3)) {
-    estado = 2;
+    estado_jogo = 2;
     //video_clear();
     //video_erase();
-  }
-  //Estado inicial = 3
 
-  return estado;
+    return estado_jogo;
+  }
 }
 
 //Funcao que le a entrada atual de chaves para controle do game
@@ -518,16 +536,18 @@ int main ( void ) {
     printf("Botao: %d", Rst);
 
     //Display inicial da tela
-    //atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite);
     tela_inicial();
     while (estado_jogo != 1){
-      estado_jogo = ler_comando();
+      estado_jogo = ler_comando(estado_jogo);
     }
+    
     //Estrutura do intervalo de tempo para o sleep da aplicacao (periodo de 10,000,000 nanossegundos ou 10 milissegundos)
     struct timespec intervalo;
     intervalo.tv_sec = 0;
     intervalo.tv_nsec = 10000000;
 
+    //Contador de ciclos para o "cooldown" da acao ocasionada por pressionar o botao
+    int contador_botao = 0;
     //Contador de ciclos para o "cooldown" da acao de mover
     int contador_movimento = 10;
 
@@ -540,8 +560,22 @@ int main ( void ) {
       //Sleep de acordo com o clock da aplicacao
       nanosleep(&intervalo, NULL);
 
-      //Atualiza o estado do jogo
-      estado_jogo = ler_comando();
+      //Verifica se e valido atualizar o estado do jogo (passou tempo suficiente sem que um botao estivesse pressionado e existe botao pressionado atualmente)
+      if ((contador_botao == 20) && (RDBT() != 0)) {
+        
+        //Atualiza o estado do jogo
+        estado_jogo = ler_comando(estado_jogo);
+
+        //Reseta o contador do "cooldown" do botao
+        contador_botao = 0;
+      }
+      //Se nao for valido atualizar, verifica se nenhum botao esta sendo pressionado e se o contador ainda nao chegou no maximo
+      else if ((contador_botao < 20) && (RDBT() == 0)) {
+
+        //Aumenta o contador de "cooldown" dos botoes
+        contador_botao += 1;
+      }
+      
       printf("%d", estado_jogo);
 
       //Atualiza a tela caso o estado do jogo tenha mudado de rodando para pausa / game over
@@ -656,7 +690,7 @@ int main ( void ) {
       //Estado 3 significa "fim de jogo", sendo por isso que so permite ser mudado para "restart"
       if (estado_jogo == 3) {
         while(estado_jogo != 2) {
-          estado_jogo = ler_comando();
+          estado_jogo = ler_comando(estado_jogo);
         }
       }
 
@@ -670,7 +704,7 @@ int main ( void ) {
 
     //Artificio para "prender" a execucao do programa ate que o input de restart seja "solto"
     while(estado_jogo == 2) {
-      estado_jogo = ler_comando();
+      estado_jogo = ler_comando(estado_jogo);
     }
   }
 
