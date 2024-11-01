@@ -19,21 +19,15 @@ RDBT:
     LDR R5, [R9]
     MOV R7, #192    @ Codigo da chamada do sistema para mapeamento (mmap2)
     SVC 0           @ Chama o sistema
-    CMP R0, #-1
-    BEQ BRIDGE_ERROR
+    CMP R0, #-1     @ Verifica se deu erro (codigo -1)
+    BEQ END_OF_CODE @ Vai ao final do codigo imediatamente caso de erro
 
     MOV R10, R0         @ Copia o endereco virtual base de R0 para 10
     LDR R0, [R10, #0]   @ Carrega o valor dos botoes para R0 (Registro de retorno)
 
     MOV R1, #0b1111     @ 15 utilizado para operacoes logicas (todos os 4 primeiros bits sao 1)
-    EOR R0, R0, R1      @ Inverte os 4 bits dos botoes (4 primeiros), na medida em que todos os 4 primeiros bits de R1 sao 1
+    EOR R0, R0, R1      @ Inverte os bits dos botoes (4 primeiros), na medida em que todos os 4 primeiros bits de R1 sao 1
     AND R0, R0, R1      @ Descarta os valores que possam estourar acima de 4 bits
-    
-    B END_OF_CODE       @ Vai ao final do codigo
-
-BRIDGE_ERROR:
-    MOV R0, #-1         @ (Codigo de saida do programa -1)
-    B END_OF_CODE       @ Vai ao final do codigo
 
 END_OF_CODE:
     MOV R7, #1  @ Codigo de chamada do sistema para retorno de uma funcao
