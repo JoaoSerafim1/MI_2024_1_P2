@@ -13,4 +13,4 @@ prplib.o: prplib.s
 	as prplib.s -o prplib.o
 
 game.o: game.c
-	gcc -c game.c -o game.o -lintelfpgaup -lpthread
+	gcc -c game.c -o game.o -lpthread
