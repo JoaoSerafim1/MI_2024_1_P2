@@ -1,7 +1,7 @@
 all: tetrisg4
 
 tetrisg4: vlib.o prplib.o game.o
-	gcc vlib.o game.o prplib.o -o tetrisg4
+	gcc vlib.o game.o prplib.o -o tetrisg4 -lpthread
 	rm vlib.o
 	rm prplib.o
 	rm game.o

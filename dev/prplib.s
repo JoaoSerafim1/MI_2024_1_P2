@@ -4,8 +4,8 @@
 RDBT:
 
     SUB sp, sp, #8
-    STR LR, [sp, #0]
-    STR R7, [sp, #4]
+    STR LR, [SP, #0]
+    STR R7, [SP, #4]
 
     LDR R0, =pagingfolder   @ Caminho de paginacao
     MOV R1, #2
@@ -35,9 +35,9 @@ RDBT:
     EOR R0, R0, R1      @ Inverte os bits dos botoes (4 primeiros), na medida em que todos os 4 primeiros bits de R1 sao 1
     AND R0, R0, R1      @ Descarta os valores que possam estourar acima de 4 bits
 
-    LDR LR, [sp, #0]
-    LDR R7, [sp, #4]
-    ADD sp, sp, #8
+    LDR LR, [SP, #0]
+    LDR R7, [SP, #4]
+    ADD SP, SP, #8
     
     B END_OF_CODE
 

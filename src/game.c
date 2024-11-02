@@ -17,7 +17,7 @@
 #include "vlib.h"
 
 //Biblioteca original de interface com os perifericos
-include "prplib.h"
+#include "prplib.h"
 
 int16_t X_inicial = 0;
 int16_t aceleracaoX = 0;
