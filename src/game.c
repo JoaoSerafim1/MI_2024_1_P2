@@ -93,7 +93,7 @@ void une_matriz(int (*tela)[10][24], int estatico[10][24], int peca[4][4], int p
 
 
 //Funcao que desenha uma matriz 10x24 em uma tela 640x480 (indexada em 80x60), centralizada na largura e altura da mesma
-void desenha_matriz(int t[10][24], void* V_virtual){
+void desenha_matriz(int t[10][24]){
   int cont0;
   int cont1;
   int posx1;
@@ -111,66 +111,66 @@ void desenha_matriz(int t[10][24], void* V_virtual){
       
       //Cinza
       if (t[cont0][cont1] == 0) {
-        WBM(posx1, posy1, 292, V_virtual);
-        WBM(posx1, posy2, 292, V_virtual);
-        WBM(posx2, posy1, 292, V_virtual);
-        WBM(posx2, posy2, 292, V_virtual);
+        WBM(posx1, posy1, 292);
+        WBM(posx1, posy2, 292);
+        WBM(posx2, posy1, 292);
+        WBM(posx2, posy2, 292);
       }
       //Vermelho
       else if(t[cont0][cont1] == 1) {
-        WBM(posx1, posy1, 7, V_virtual);
-        WBM(posx1, posy2, 7, V_virtual);
-        WBM(posx2, posy1, 7, V_virtual);
-        WBM(posx2, posy2, 7, V_virtual);
+        WBM(posx1, posy1, 7);
+        WBM(posx1, posy2, 7);
+        WBM(posx2, posy1, 7);
+        WBM(posx2, posy2, 7);
       }
       //Laranja
       else if(t[cont0][cont1] == 2) {
-        WBM(posx1, posy1, 39, V_virtual);
-        WBM(posx1, posy2, 39, V_virtual);
-        WBM(posx2, posy1, 39, V_virtual);
-        WBM(posx2, posy2, 39, V_virtual);
+        WBM(posx1, posy1, 39);
+        WBM(posx1, posy2, 39);
+        WBM(posx2, posy1, 39);
+        WBM(posx2, posy2, 39);
       }
       //Rosa
       else if(t[cont0][cont1] == 3) {
-        WBM(posx1, posy1, 263, V_virtual);
-        WBM(posx1, posy2, 263, V_virtual);
-        WBM(posx2, posy1, 263, V_virtual);
-        WBM(posx2, posy2, 263, V_virtual);
+        WBM(posx1, posy1, 263);
+        WBM(posx1, posy2, 263);
+        WBM(posx2, posy1, 263);
+        WBM(posx2, posy2, 263);
       }
       //Amarelo
       else if(t[cont0][cont1] == 4) {
-        WBM(posx1, posy1, 63, V_virtual);
-        WBM(posx1, posy2, 63, V_virtual);
-        WBM(posx2, posy1, 63, V_virtual);
-        WBM(posx2, posy2, 63, V_virtual);
+        WBM(posx1, posy1, 63);
+        WBM(posx1, posy2, 63);
+        WBM(posx2, posy1, 63);
+        WBM(posx2, posy2, 63);
       }
       //Verde
       else if(t[cont0][cont1] == 5) {
-        WBM(posx1, posy1, 56, V_virtual);
-        WBM(posx1, posy2, 56, V_virtual);
-        WBM(posx2, posy1, 56, V_virtual);
-        WBM(posx2, posy2, 56, V_virtual);
+        WBM(posx1, posy1, 56);
+        WBM(posx1, posy2, 56);
+        WBM(posx2, posy1, 56);
+        WBM(posx2, posy2, 56);
       }
       //Ciano
       else if(t[cont0][cont1] == 6) {
-        WBM(posx1, posy1, 504, V_virtual);
-        WBM(posx1, posy2, 504, V_virtual);
-        WBM(posx2, posy1, 504, V_virtual);
-        WBM(posx2, posy2, 504, V_virtual);
+        WBM(posx1, posy1, 504);
+        WBM(posx1, posy2, 504);
+        WBM(posx2, posy1, 504);
+        WBM(posx2, posy2, 504);
       }
       //Azul
       else if(t[cont0][cont1] == 7) {
-        WBM(posx1, posy1, 448, V_virtual);
-        WBM(posx1, posy2, 448, V_virtual);
-        WBM(posx2, posy1, 448, V_virtual);
-        WBM(posx2, posy2, 448, V_virtual);
+        WBM(posx1, posy1, 448);
+        WBM(posx1, posy2, 448);
+        WBM(posx2, posy1, 448);
+        WBM(posx2, posy2, 448);
       }
       //Magenta
       else if(t[cont0][cont1] == 8) {
-        WBM(posx1, posy1, 455, V_virtual);
-        WBM(posx1, posy2, 455, V_virtual);
-        WBM(posx2, posy1, 455, V_virtual);
-        WBM(posx2, posy2, 455, V_virtual);
+        WBM(posx1, posy1, 455);
+        WBM(posx1, posy2, 455);
+        WBM(posx2, posy1, 455);
+        WBM(posx2, posy2, 455);
       }
     }
   }
@@ -191,7 +191,7 @@ void desenha_pontos(int pontos){
 }
 
 //Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 640x480
-void desenha_estado(int estado_jogo, int linha_limite, void* V_virtual) {
+void desenha_estado(int estado_jogo, int linha_limite) {
   int cont0;
   int posx1;
   int posx2;
@@ -203,8 +203,8 @@ void desenha_estado(int estado_jogo, int linha_limite, void* V_virtual) {
     posx2 = (posx1 + 1);
 
     //Branco
-    WBM(posx1, ((linha_limite * 2) + 2), 511, V_virtual);
-    WBM(posx2, ((linha_limite * 2) + 2), 511, V_virtual);
+    WBM(posx1, ((linha_limite * 2) + 2), 511);
+    WBM(posx2, ((linha_limite * 2) + 2), 511);
   }
 
   //Exibe as mensagens de estado de jogo para "pausa" e "fim de jogo"
@@ -224,15 +224,15 @@ void desenha_estado(int estado_jogo, int linha_limite, void* V_virtual) {
 }
 
 //Funcao que consolida as funcoes de atualizacao da tela
-void atualiza_tela(int estatico[10][24], int peca[4][4], int posx, int posy, int pontos, int estado_jogo, int linha_limite, void* V_virtual) {
+void atualiza_tela(int estatico[10][24], int peca[4][4], int posx, int posy, int pontos, int estado_jogo, int linha_limite) {
   
   int tela[10][24];
 
   une_matriz(&tela, estatico, peca, posx, posy);
 
-  desenha_matriz(tela, V_virtual);
+  desenha_matriz(tela);
   desenha_pontos(pontos);
-  desenha_estado(estado_jogo, linha_limite, V_virtual);
+  desenha_estado(estado_jogo, linha_limite);
 }
 
 
@@ -430,10 +430,10 @@ int ler_reset() {
 }
 
 //Desenha a tela inicial do jogo
-int tela_inicial(void* V_virtual){
+int tela_inicial(){
   
   //Background
-  WBR_BACKGROUND(511, V_virtual);
+  WBR_BACKGROUND(511);
 
   //Titulo do jogo
   /*char nome_jogo[12] = "TETRIS 2024";
@@ -448,7 +448,6 @@ int main ( void ) {
     int fd = -1;
     int fd1 = -1;
     void *I2C0_virtual;
-    void* V_virtual = MAP();
     int16_t XYZ[3];
 
     // Abrir /dev/mem e mapear a área de memória do I2C e do SYSMGR
@@ -468,6 +467,9 @@ int main ( void ) {
    I2C0_enable_sts = (int *) (I2C0_virtual + 0x9C);
    I2C0_fs_hcnt = (int *) (I2C0_virtual + 0x1C);
    I2C0_fs_lcnt = (int *) (I2C0_virtual + 0x20);
+
+   //Mapear memória assembly
+   MAP();
 
   //Inicializa o controlador I2C e configura a conexao entre o controlador I2C e o acelerometro ADXL345
   I2C0_init();
@@ -538,7 +540,7 @@ int main ( void ) {
     printf("Botao: %d", Rst);
 
     //Display inicial da tela
-    tela_inicial(V_virtual);
+    tela_inicial();
     while (estado_jogo != 1){
       estado_jogo = ler_comando(estado_jogo);
     }
@@ -582,7 +584,7 @@ int main ( void ) {
 
       //Atualiza a tela caso o estado do jogo tenha mudado de rodando para pausa / game over
       if((quer_exibir_estado == 1) && (estado_jogo != 0)) {
-        atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite, V_virtual);
+        atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite);
       }
 
       //Acoes executadas a cada ciclo do clock, caso o jogo esteja em andamento
@@ -617,7 +619,7 @@ int main ( void ) {
             mover(estatico, peca, &posx, &posy, direcao_movimento, 0);
 
             //Desenha os novos elementos na tela
-            atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite, V_virtual);
+            atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite);
           }
         }
         //Caso contrario, aumenta o contador do "cooldown"
@@ -685,7 +687,7 @@ int main ( void ) {
         }
 
         //Desenha os novos elementos na tela
-        atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite, V_virtual);
+        atualiza_tela(estatico, peca, posx, posy, contador_pontos, estado_jogo, linha_limite);
       }
 
       //Artificio para "prender" a execucao do programa quando o estado acabar sendo 3 (so permite sair caso seja mudado para estado 2)
