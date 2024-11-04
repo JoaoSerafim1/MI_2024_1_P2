@@ -1,6 +1,8 @@
 #ifndef vlib.h
 #define vlib.h
 
+extern void MAP(); 
+
 extern void WBR_SPRITE(unsigned int registrador, unsigned int offset, unsigned int x, unsigned int y, unsigned int sp);
 
 extern void WBR_BACKGROUND(unsigned int rgb);

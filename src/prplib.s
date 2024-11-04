@@ -34,7 +34,7 @@ RDBT:
     BEQ END_0                       @ Vai ao final do codigo imediatamente caso de erro
 
     MOV R10, R0                     @ Copia o endereco virtual base de R0 para R10
-    LDR R0, [R10, #KEYS_BASE]       @ Carrega o valor dos botoes para R0 (Registro de retorno)
+    LDR R0, [R10, #KEYS_BASE]               @ Carrega o valor dos botoes para R0 (Registro de retorno)
 
     MOV R1, #0b1111                 @ 15 utilizado para operacoes logicas (todos os 4 primeiros bits sao 1)
     EOR R0, R0, R1                  @ Inverte os bits dos botoes (4 primeiros), na medida em que todos os 4 primeiros bits de R1 sao 1
