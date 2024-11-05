@@ -52,31 +52,31 @@ void mostrar_numero(char* numero) {
   
   for(cont0 = 0; cont0 < str_size; cont0++) {
     char digito = numero[cont0];
-    int indicador_binario = 0;
+    int indicador_binario = 127;
 
     if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
-      indicador_binario += 1;
+      indicador_binario -= 1;
     }
     if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9') {
-      indicador_binario += 2;
+      indicador_binario -= 2;
     }
     if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
-      indicador_binario += 4;
+      indicador_binario -= 4;
     }
     if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
-      indicador_binario += 8;
+      indicador_binario -= 8;
     }
     if(digito == '0' || digito == '2' || digito == '6' || digito == '8') {
-      indicador_binario += 16;
+      indicador_binario -= 16;
     }
     if(digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
-      indicador_binario += 32;
+      indicador_binario -= 32;
     }
     if(digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
-      indicador_binario += 64;
+      indicador_binario -= 64;
     }
 
-    TNBT((str_size-cont0-1), indicador_binario);
+    TNLD((str_size-cont0-1), indicador_binario);
   }
 }
 
@@ -417,10 +417,10 @@ int ler_movimento() {
   //A direcao inicialmente e 0, mas pode mudar de acordo com a inclinado
   int direcao = 0;
 
-  //printf("X_INICIAL = %d, ", X_inicial);
-  //printf("X = %d, ", aceleracaoX);
-  //printf("Y = %d, ", aceleracaoY);
-  //printf("Z = %d\n", aceleracaoZ);
+  printf("X_INICIAL = %d, ", X_inicial);
+  printf("X = %d, ", aceleracaoX);
+  printf("Y = %d, ", aceleracaoY);
+  printf("Z = %d\n", aceleracaoZ);
   
   //Decide a quantidade de ciclos necessarios para o proximo movimento, caso a inclinacao seja reconhecida como suficiente
   //As variaveis de inclinacao do dispositivo sao globais pois a biblioteca de criacao de threads nao permite passagem de argumentos facilmente 
