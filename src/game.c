@@ -46,6 +46,39 @@ void* ler_acelerometro(void* arg) {
     return NULL;
 }
 
+void mostrar_numero(char* numero) {
+  int str_size = strlen(numero);
+  int cont0;
+  
+  for(cont0 = 0; cont0 < str_size; cont0++) {
+    char digito = numero[cont0];
+    int indicador_binario = 0;
+
+    if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+      indicador_binario += 1;
+    }
+    if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9') {
+      indicador_binario += 2;
+    }
+    if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+      indicador_binario += 4;
+    }
+    if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+      indicador_binario += 8;
+    }
+    if(digito == '0' || digito == '2' || digito == '6' || digito == '8') {
+      indicador_binario += 16;
+    }
+    if(digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+      indicador_binario += 32;
+    }
+    if(digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+      indicador_binario += 64;
+    }
+
+    TNBT((str_size-cont0-1), indicador_binario);
+  }
+}
 
 //Funcao que preenche com 0 todas as celulas de uma matriz 10x24
 void preenche_zero_10_x_24(int (*tela)[10][24]) {
@@ -176,18 +209,36 @@ void desenha_matriz(int t[10][24]){
   }
 }
 
+void limpa_matriz() {
+  int cont0;
+  int cont1;
+
+  for(cont0 = 0; cont0 < 10; cont0++) {
+    
+    for(cont1 = 0; cont1 < 24; cont1++){
+      int posx1 = ((cont0 * 2) + 35);
+      int posy1 = ((cont1 * 2) + 1);
+      int posx2 = (posx1 + 1);
+      int posy2 = (posy1 + 1);
+
+      WBM(posx1, posy1, 510);
+      WBM(posx1, posy2, 510);
+      WBM(posx2, posy1, 510);
+      WBM(posx2, posy2, 510);
+    }
+  }
+}
 
 //Funcao que exibe a pontuacao do jogador em uma tela 320x240, ao lado da matriz do jogo exibida na funcao anterior
 void desenha_pontos(int pontos){
   
   //Converte int em array de caracteres de ate 32 caracteres (o que cabe na tela apartir da posicao inicial)
-  /*char int_array[32];
+  char int_array[32];
   sprintf(int_array, "%d", pontos*100);
 
-  char mensagem_pontos[7] = "PONTOS:";
+  mostrar_numero(int_array);
 
-  video_text(28, 0, mensagem_pontos);
-  video_text(28, 1, int_array);*/
+  //char mensagem_pontos[7] = "PONTOS:";
 }
 
 //Funcao que exibe a linha limite da colocacao das pecas e diz o estado do jogo caso esteja pausado ou seja "fim de jogo" em tela 640x480
@@ -233,6 +284,7 @@ void atualiza_tela(int estatico[10][24], int peca[4][4], int posx, int posy, int
   desenha_matriz(tela);
   desenha_pontos(pontos);
   desenha_estado(estado_jogo, linha_limite);
+  printf("\nPONTOS: %d \n", pontos);
 }
 
 
@@ -365,10 +417,10 @@ int ler_movimento() {
   //A direcao inicialmente e 0, mas pode mudar de acordo com a inclinado
   int direcao = 0;
 
-  printf("X_INICIAL = %d, ", X_inicial);
-  printf("X = %d, ", aceleracaoX);
-  printf("Y = %d, ", aceleracaoY);
-  printf("Z = %d\n", aceleracaoZ);
+  //printf("X_INICIAL = %d, ", X_inicial);
+  //printf("X = %d, ", aceleracaoX);
+  //printf("Y = %d, ", aceleracaoY);
+  //printf("Z = %d\n", aceleracaoZ);
   
   //Decide a quantidade de ciclos necessarios para o proximo movimento, caso a inclinacao seja reconhecida como suficiente
   //As variaveis de inclinacao do dispositivo sao globais pois a biblioteca de criacao de threads nao permite passagem de argumentos facilmente 
@@ -399,7 +451,7 @@ int ler_movimento() {
 int ler_comando(estado_jogo) {
 
   int switch_value = RDBT();
-  usleep(500000);
+  //usleep(500000);
   //int switch_value = 2;
   //Entrar em pausa
   if ((switch_value == 1) && (estado_jogo == 0)) {
@@ -410,7 +462,7 @@ int ler_comando(estado_jogo) {
   } //Resetar
   else if ((switch_value == 2) || (switch_value == 3)) {
     estado_jogo = 2;
-    //video_clear();
+    limpa_matriz();
     //video_erase();
 
     return estado_jogo;
@@ -419,28 +471,28 @@ int ler_comando(estado_jogo) {
 
 //Funcao que le a entrada atual de chaves para controle do game
 //Esta existe apenas para print, foi mantida no codigo pois assim estava na ultima vez que foi rodado na placa
-int ler_reset() {
+/*int ler_reset() {
   int estado;
-  /*
+  
   KEY_open();
   KEY_read(&estado);
   KEY_close();
-  */
+  
   return estado;
-}
+}*/
 
 //Desenha a tela inicial do jogo
 int tela_inicial(){
   
   //Background
   WBR_BACKGROUND(511);
+  limpa_matriz();
 
   //Titulo do jogo
   /*char nome_jogo[12] = "TETRIS 2024";
   video_text(35, 30, nome_jogo);
 
-  video_show();
-  video_clear();*/
+  video_show();*/
 }
 
 
@@ -536,19 +588,21 @@ int main ( void ) {
     int estado_jogo = 3;
 
     //Lê o botão de reset
-    Rst = ler_reset();
-    printf("Botao: %d", Rst);
-
-    //Display inicial da tela
-    tela_inicial();
-    while (estado_jogo != 1){
-      estado_jogo = ler_comando(estado_jogo);
-    }
+    //Rst = ler_reset();
+    //printf("Botao: %d", Rst);
     
     //Estrutura do intervalo de tempo para o sleep da aplicacao (periodo de 10,000,000 nanossegundos ou 10 milissegundos)
     struct timespec intervalo;
     intervalo.tv_sec = 0;
     intervalo.tv_nsec = 10000000;
+
+     //Display inicial da tela
+    tela_inicial();
+    while (estado_jogo != 1){
+      estado_jogo = ler_comando(estado_jogo);
+      //Sleep de acordo com o clock da aplicacao
+      nanosleep(&intervalo, NULL);
+    }
 
     //Contador de ciclos para o "cooldown" da acao ocasionada por pressionar o botao
     int contador_botao = 0;
@@ -580,7 +634,7 @@ int main ( void ) {
         contador_botao += 1;
       }
       
-      printf("%d", estado_jogo);
+      //printf("%d", estado_jogo);
 
       //Atualiza a tela caso o estado do jogo tenha mudado de rodando para pausa / game over
       if((quer_exibir_estado == 1) && (estado_jogo != 0)) {
@@ -695,6 +749,8 @@ int main ( void ) {
       if (estado_jogo == 3) {
         while(estado_jogo != 2) {
           estado_jogo = ler_comando(estado_jogo);
+          //Sleep de acordo com o clock da aplicacao
+          nanosleep(&intervalo, NULL);
         }
       }
 
@@ -709,6 +765,8 @@ int main ( void ) {
     //Artificio para "prender" a execucao do programa ate que o input de restart seja "solto"
     while(estado_jogo == 2) {
       estado_jogo = ler_comando(estado_jogo);
+      //Sleep de acordo com o clock da aplicacao
+      nanosleep(&intervalo, NULL);
     }
   }
 

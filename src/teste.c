@@ -13,9 +13,9 @@
 int main(){
     MAP();
     WBR_BACKGROUND(511);
-    WBR_SPRITE(1, 1, 100, 50, 1);
+    WBR_SPRITE(1, 2, 250, 200, 1);
     //WSM(1, 7);
-    WBM(200, 250, 7);
-    DP(100, 200, 7, 1, 2);
+    WBM(100, 100, 511);
+    DP(100, 200, 187, 0, 2);
     return 0;
 }
