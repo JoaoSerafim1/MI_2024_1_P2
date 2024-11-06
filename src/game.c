@@ -16,6 +16,9 @@
 //Biblioteca original de controle da GPU customizada
 #include "vlib.h"
 
+//Funcoes separadas da tela
+#include "startscreen.c"
+
 int16_t X_inicial = 0;
 int16_t aceleracaoX = 0;
 int16_t aceleracaoY = 0;
@@ -97,6 +100,25 @@ void zerar_display_7seg() {
   for(cont0 = 0; cont0 < 6; cont0++) {
     //Manda a informacao para a funcao assembly que controla os displays de 7 segmentos
     TNLD(cont0, 0);
+  }
+}
+
+void preparar_sprites() {
+  int cont0;
+  int cont1;
+  int corsprite;
+
+  for(cont0 = 0; cont0 < 21; cont0++) {
+
+      for(cont1 = 0; cont1 < 20; cont1++) {
+          corsprite = 292;
+
+          if((cont1 >= 3 && cont1 <= 7) || (cont1 >= 12 && cont1 <= 16)) {
+              corsprite = 0;
+          }
+          
+          WSM(((cont0 * 20) + cont1), corsprite);
+      }
   }
 }
 
@@ -280,12 +302,13 @@ void desenha_estado(int estado_jogo, int linha_limite) {
   }
 
   //Exibe as mensagens de estado de jogo para "pausa" e "fim de jogo"
-  /*if(estado_jogo == 1) {
-
-    char mensagem_estado[12] = "JOGO PAUSADO";
-    video_text(34, 30, mensagem_estado);
+  if(estado_jogo == 1) {
+    WBR_SPRITE(1, 0, 310, 160, 1);
   }
-  else if(estado_jogo == 3) {
+  else{
+    WBR_SPRITE(1, 0, 300, 200, 0);
+  }
+  /*else if(estado_jogo == 3) {
     
     char mensagem_estado[11] = "FIM DE JOGO";
     video_text(35, 30, mensagem_estado);
@@ -490,17 +513,6 @@ int ler_comando(estado_jogo) {
   }
 }
 
-//Funcao que le a entrada atual de chaves para controle do game
-//Esta existe apenas para print, foi mantida no codigo pois assim estava na ultima vez que foi rodado na placa
-/*int ler_reset() {
-  int estado;
-  
-  KEY_open();
-  KEY_read(&estado);
-  KEY_close();
-  
-  return estado;
-}*/
 
 //Desenha a tela inicial do jogo
 int tela_inicial(){
@@ -508,11 +520,9 @@ int tela_inicial(){
   //Background
   WBR_BACKGROUND(511);
   limpa_matriz();
+  WBR_SPRITE(1, 0, 300, 200, 0);
   zerar_display_7seg();
-
-  //Titulo do jogo
-  /*char nome_jogo[12] = "TETRIS 2024";
-  video_text(35, 30, nome_jogo);*/
+  display_inicial();
 }
 
 
@@ -576,6 +586,9 @@ int main ( void ) {
     //Inicia com 0 os espacos de jogo e da peca
     preenche_zero_10_x_24(&estatico);
     preenche_zero_4_x_4(&peca);
+
+    //Configura os sprites
+    preparar_sprites();
 
     //Contador de ciclos do game, usado para testes
     int cont = 0;
