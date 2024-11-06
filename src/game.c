@@ -16,9 +16,6 @@
 //Biblioteca original de controle da GPU customizada
 #include "vlib.h"
 
-//Biblioteca original de interface com os perifericos
-#include "prplib.h"
-
 int16_t X_inicial = 0;
 int16_t aceleracaoX = 0;
 int16_t aceleracaoY = 0;
@@ -56,31 +53,39 @@ void mostrar_numero(char* numero) {
     //Inicialmente 127, ou seja 0b111111, o que faz com que todos os segmentos estejam desligados
     int indicador_binario = 127;
 
-    //De acordo com o digito na casa decimal atual, zera o bit referente ao segmento, o que faz com que este segmento fique ligado
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9')) {
-      indicador_binario -= 1;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9')) {
-      indicador_binario -= 2;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9')) {
-      indicador_binario -= 4;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
-      indicador_binario -= 8;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '6' || digito == '8')) {
-      indicador_binario -= 16;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
-      indicador_binario -= 32;
-    }
-    if(((str_size + cont0) >= 6) && (digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
-      indicador_binario -= 64;
+    printf("%d\n", str_size);
+    printf("%d\n", cont0);
+
+    //Se estiver em um indice correspondente a um digito valido
+    if((cont0 + str_size) >= 6) {
+      int digito = numero[(5 - cont0)];
+      
+      //De acordo com o digito na casa decimal atual, zera o bit referente ao segmento, o que faz com que este segmento fique ligado
+      if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+        indicador_binario -= 1;
+      }
+      if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9') {
+        indicador_binario -= 2;
+      }
+      if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+        indicador_binario -= 4;
+      }
+      if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+        indicador_binario -= 8;
+      }
+      if(digito == '0' || digito == '2' || digito == '6' || digito == '8') {
+        indicador_binario -= 16;
+      }
+      if(digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+        indicador_binario -= 32;
+      }
+      if(digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+        indicador_binario -= 64;
+      }
     }
 
     //Manda a informacao para a funcao assembly que controla os displays de 7 segmentos
-    TNLD((5 - cont0), indicador_binario);
+    TNLD(cont0, indicador_binario);
   }
 }
 
@@ -91,7 +96,7 @@ void zerar_display_7seg() {
   //Repete para cada digito do display de 7 segmentos (indice 0 ao indice 5)
   for(cont0 = 0; cont0 < 6; cont0++) {
     //Manda a informacao para a funcao assembly que controla os displays de 7 segmentos
-    TNLD(cont0, 127);
+    TNLD(cont0, 0);
   }
 }
 
@@ -153,7 +158,7 @@ void desenha_matriz(int t[10][24]){
   for(cont0 = 0; cont0 < 10; cont0++) {
     
     for(cont1 = 0; cont1 < 24; cont1++){
-      posx1 = ((cont0 * 2) + 35);
+      posx1 = ((cont0 * 2) + 30);
       posy1 = ((cont1 * 2) + 1);
       posx2 = (posx1 + 1);
       posy2 = (posy1 + 1);
@@ -233,7 +238,7 @@ void limpa_matriz() {
   for(cont0 = 0; cont0 < 10; cont0++) {
     
     for(cont1 = 0; cont1 < 24; cont1++){
-      int posx1 = ((cont0 * 2) + 35);
+      int posx1 = ((cont0 * 2) + 30);
       int posy1 = ((cont1 * 2) + 1);
       int posx2 = (posx1 + 1);
       int posy2 = (posy1 + 1);
@@ -266,7 +271,7 @@ void desenha_estado(int estado_jogo, int linha_limite) {
 
   //Desenha a linha limite da area de jogo
   for(cont0 = 0; cont0 < 10; cont0++){
-    posx1 = ((cont0 * 2) + 35);
+    posx1 = ((cont0 * 2) + 30);
     posx2 = (posx1 + 1);
 
     //Branco
@@ -300,7 +305,7 @@ void atualiza_tela(int estatico[10][24], int peca[4][4], int posx, int posy, int
   desenha_matriz(tela);
   desenha_pontos(pontos);
   desenha_estado(estado_jogo, linha_limite);
-  printf("\nPONTOS: %d \n", pontos);
+  //printf("\nPONTOS: %d \n", pontos);
 }
 
 
@@ -433,10 +438,10 @@ int ler_movimento() {
   //A direcao inicialmente e 0, mas pode mudar de acordo com a inclinado
   int direcao = 0;
 
-  printf("X_INICIAL = %d, ", X_inicial);
-  printf("X = %d, ", aceleracaoX);
-  printf("Y = %d, ", aceleracaoY);
-  printf("Z = %d\n", aceleracaoZ);
+  //printf("X_INICIAL = %d, ", X_inicial);
+  //printf("X = %d, ", aceleracaoX);
+  //printf("Y = %d, ", aceleracaoY);
+  //printf("Z = %d\n", aceleracaoZ);
   
   //Decide a quantidade de ciclos necessarios para o proximo movimento, caso a inclinacao seja reconhecida como suficiente
   //As variaveis de inclinacao do dispositivo sao globais pois a biblioteca de criacao de threads nao permite passagem de argumentos facilmente 
@@ -503,7 +508,7 @@ int tela_inicial(){
   //Background
   WBR_BACKGROUND(511);
   limpa_matriz();
-  zerar_display_7seg()
+  zerar_display_7seg();
 
   //Titulo do jogo
   /*char nome_jogo[12] = "TETRIS 2024";
