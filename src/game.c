@@ -56,8 +56,8 @@ void mostrar_numero(char* numero) {
     //Inicialmente 127, ou seja 0b111111, o que faz com que todos os segmentos estejam desligados
     int indicador_binario = 127;
 
-    printf("%d\n", str_size);
-    printf("%d\n", cont0);
+    //printf("%d\n", str_size);
+    //printf("%d\n", cont0);
 
     //Se estiver em um indice correspondente a um digito valido
     if((cont0 + str_size) >= 6) {
@@ -461,10 +461,10 @@ int ler_movimento() {
   //A direcao inicialmente e 0, mas pode mudar de acordo com a inclinado
   int direcao = 0;
 
-  //printf("X_INICIAL = %d, ", X_inicial);
-  //printf("X = %d, ", aceleracaoX);
-  //printf("Y = %d, ", aceleracaoY);
-  //printf("Z = %d\n", aceleracaoZ);
+  printf("X_INICIAL = %d, ", X_inicial);
+  printf("X = %d, ", aceleracaoX);
+  printf("Y = %d, ", aceleracaoY);
+  printf("Z = %d\n", aceleracaoZ);
   
   //Decide a quantidade de ciclos necessarios para o proximo movimento, caso a inclinacao seja reconhecida como suficiente
   //As variaveis de inclinacao do dispositivo sao globais pois a biblioteca de criacao de threads nao permite passagem de argumentos facilmente 
@@ -522,7 +522,7 @@ int tela_inicial(){
   limpa_matriz();
   WBR_SPRITE(1, 0, 300, 200, 0);
   zerar_display_7seg();
-  display_inicial();
+  display_inicial(1);
 }
 
 
@@ -644,6 +644,9 @@ int main ( void ) {
 
     //Variavel para determinar se esta sendo pedida exibicao do estado
     int quer_exibir_estado = 0;
+
+    display_inicial(0);
+    display_final(0);
     
     //Loop interno da sessao de jogo
     while(estado_jogo != 2) {
@@ -780,6 +783,7 @@ int main ( void ) {
       //Artificio para "prender" a execucao do programa quando o estado acabar sendo 3 (so permite sair caso seja mudado para estado 2)
       //Estado 3 significa "fim de jogo", sendo por isso que so permite ser mudado para "restart"
       if (estado_jogo == 3) {
+        display_final(1);
         while(estado_jogo != 2) {
           estado_jogo = ler_comando(estado_jogo);
           //Sleep de acordo com o clock da aplicacao
