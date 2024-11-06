@@ -46,39 +46,55 @@ void* ler_acelerometro(void* arg) {
     return NULL;
 }
 
+//Funcao para exibir o numero referente a pontuacao no display de 7 segmentos
 void mostrar_numero(char* numero) {
   int str_size = strlen(numero);
   int cont0;
   
-  for(cont0 = 0; cont0 < str_size; cont0++) {
-    char digito = numero[cont0];
+  //Repete para cada digito do display de 7 segmentos (indice 0 ao indice 5)
+  for(cont0 = 0; cont0 < 6; cont0++) {
+    //Inicialmente 127, ou seja 0b111111, o que faz com que todos os segmentos estejam desligados
     int indicador_binario = 127;
 
-    if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+    //De acordo com o digito na casa decimal atual, zera o bit referente ao segmento, o que faz com que este segmento fique ligado
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9')) {
       indicador_binario -= 1;
     }
-    if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9') {
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '7' || digito == '8' || digito == '9')) {
       indicador_binario -= 2;
     }
-    if(digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9') {
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '1' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '7' || digito == '8' || digito == '9')) {
       indicador_binario -= 4;
     }
-    if(digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '3' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
       indicador_binario -= 8;
     }
-    if(digito == '0' || digito == '2' || digito == '6' || digito == '8') {
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '2' || digito == '6' || digito == '8')) {
       indicador_binario -= 16;
     }
-    if(digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+    if(((str_size + cont0) >= 6) && (digito == '0' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
       indicador_binario -= 32;
     }
-    if(digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9') {
+    if(((str_size + cont0) >= 6) && (digito == '2' || digito == '3' || digito == '4' || digito == '5' || digito == '6' || digito == '8' || digito == '9')) {
       indicador_binario -= 64;
     }
 
-    TNLD((str_size-cont0-1), indicador_binario);
+    //Manda a informacao para a funcao assembly que controla os displays de 7 segmentos
+    TNLD((5 - cont0), indicador_binario);
   }
 }
+
+//Funcao para zerar todos os digitos do display de 7 segmentos
+void zerar_display_7seg() {
+  int cont0;
+  
+  //Repete para cada digito do display de 7 segmentos (indice 0 ao indice 5)
+  for(cont0 = 0; cont0 < 6; cont0++) {
+    //Manda a informacao para a funcao assembly que controla os displays de 7 segmentos
+    TNLD(cont0, 127);
+  }
+}
+
 
 //Funcao que preenche com 0 todas as celulas de uma matriz 10x24
 void preenche_zero_10_x_24(int (*tela)[10][24]) {
@@ -209,6 +225,7 @@ void desenha_matriz(int t[10][24]){
   }
 }
 
+//Funcao que limpa a matriz da tela
 void limpa_matriz() {
   int cont0;
   int cont1;
@@ -248,8 +265,7 @@ void desenha_estado(int estado_jogo, int linha_limite) {
   int posx2;
 
   //Desenha a linha limite da area de jogo
-  //video_box((110), (linha_limite * 10), (209), (((linha_limite + 1) * 10) - 1), video_WHITE);
-  for(cont0 = 0; cont0 < 20; cont0++){
+  for(cont0 = 0; cont0 < 10; cont0++){
     posx1 = ((cont0 * 2) + 35);
     posx2 = (posx1 + 1);
 
@@ -487,12 +503,11 @@ int tela_inicial(){
   //Background
   WBR_BACKGROUND(511);
   limpa_matriz();
+  zerar_display_7seg()
 
   //Titulo do jogo
   /*char nome_jogo[12] = "TETRIS 2024";
-  video_text(35, 30, nome_jogo);
-
-  video_show();*/
+  video_text(35, 30, nome_jogo);*/
 }
 
 
