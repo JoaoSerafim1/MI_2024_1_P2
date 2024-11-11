@@ -4,7 +4,7 @@ Com o objetivo de compreender o mapeamento de memória em uma arquitetua ARM, en
 
 ## Como executar
 
-O programa é compatível com linux, sendo desenvolvido para funcionar em uma máquina com processador ARM, mais especificamente numa placa DE1-SoC. Os arquivos do código, escrito em C estão disponíveis no diretório da aplicação. Sendo eles:
+O programa é compatível com linux, sendo desenvolvido para funcionar numa placa DE1-SoC com um processador gráfico embarcado, que é descrito no documento citado nas referências. Os arquivos, escritos em C e em Assembly estão disponíveis no diretório da aplicação. Sendo eles:
 
 - vlib.s
 ###### (Arquivo da biblioteca implementada em Assembly.)
