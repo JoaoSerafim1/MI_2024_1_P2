@@ -3,7 +3,9 @@
 Com o objetivo de compreender o mapeamento de memória em uma arquitetua ARM, entender os princípios básicos da arquitetura da plataforma DE1-SOC e aplicar conhecimentos da interação hardware software através da programação em Assembly, foi desenvolida essa biblioteca com funções gráficas. Através de um processador gráfico, a biblioteca permite que o usuário exiba polígonos, sprites e modifique o fundo completamente ou em partes.
 
 ##### DEMO da aplicação utilizando a biblioteca da GPU:
-https://github.com/JoaoSerafim1/MI_2024_1_P2/blob/main/media/tetris_wLib.mp4
+https://github.com/user-attachments/assets/44bb90be-4ec5-40d9-a5e4-c849fa2916cb
+
+
 
 ## Requisitos
 O projeto desenvolvido precisa atender a uma série de restrições e requisitos técnicos. A seguir, são detalhados os requisitos essenciais para a construção da solução:
