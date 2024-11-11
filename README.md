@@ -21,11 +21,11 @@ O programa é compatível com linux, sendo desenvolvido para funcionar numa plac
 - address_map_arm.h
 ###### (Arquivo header com os endereços dos registradores usados.)
 
-Para executar o programa, utilize o arquivo makefile também disponível; Em um diretório com os arquivos citados anteriormente, execute os seguintes comandos no terminal linux:
+Para executar o programa, utilize um dos arquivo makefile também disponíveis; No diretório principal do projeto (ou ainda, caso isso resulte em falha, no diretório "src" que contém os arquivos citados anteriormente), execute os seguintes comandos no terminal linux:
 
 - make all
   
-###### (Cria o executável do joo com a biblioteca.)
+###### (Cria o executável do jogo utilizando as bibliotecas nativas e implementadas.)
 
 - sudo ./tetrisg4
 
