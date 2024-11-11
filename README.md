@@ -10,13 +10,13 @@ https://github.com/user-attachments/assets/44bb90be-4ec5-40d9-a5e4-c849fa2916cb
 ## Requisitos
 O projeto desenvolvido precisa atender a uma série de restrições e requisitos técnicos. A seguir, são detalhados os requisitos essenciais para a construção da solução:
 
-* Requisitos de linguagem:
-  * O código da biblioteca deve ser escrito em linguagem assembly. Isso implica que todas as funções e rotinas de baixo nível que compõem a biblioteca precisam ser implementadas utilizando as instruções de assembly do processador.
-* Funções da biblioteca:
-  * Todas as funções existentes no processador gráfico devem ser implementadas.
-  * Essas funções devem ser projetadas para facilitar a interação com a GPU, possibilitando a criação e manipulação de elementos gráficos, como a renderização de imagens, animações, controle de resolução, cores e outros aspectos visuais essenciais para o funcionamento do jogo.
-* Implementação da biblioteca desenvolvida no jogo:
-  * A biblioteca deve fornecer interfaces de alto nível que permitam ao desenvolvedor focar na lógica do jogo, enquanto abstrai os detalhes de implementação gráfica de baixo nível
+- *Requisitos de linguagem:*
+  - O código da biblioteca deve ser escrito em linguagem assembly. Isso implica que todas as funções e rotinas de baixo nível que compõem a biblioteca precisam ser implementadas utilizando as instruções de assembly do processador.
+- *Funções da biblioteca:*
+  - Todas as funções existentes no processador gráfico devem ser implementadas.
+  - Essas funções devem ser projetadas para facilitar a interação com a GPU, possibilitando a criação e manipulação de elementos gráficos, como a renderização de imagens, animações, controle de resolução, cores e outros aspectos visuais essenciais para o funcionamento do jogo.
+- *Implementação da biblioteca desenvolvida no jogo:*
+  - A biblioteca deve fornecer interfaces de alto nível que permitam ao desenvolvedor focar na lógica do jogo, enquanto abstrai os detalhes de implementação gráfica de baixo nível
 
 ## Como executar
 
