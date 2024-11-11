@@ -33,6 +33,8 @@ Para executar o programa, utilize o arquivo makefile também disponível; Em um 
 
 ## Funções da biblioteca
 
-### DP (Definição de Polígono)
+#### DP (Definição de Polígono)
 
+Essa função permite que seja desehado um polígono bidimensional na tela, mais especificamnte um quadrado ou um triângulo. A função recebe os seguintes parâmetros: coordenada x do polígono, coordenada y o polígono, código RGB da cor do polígono, formato do polígono (0 é quadrado, 1 é triângulo) e tamanho (0-15).
 
+#### WBM (Escrita na Memória de Background)
