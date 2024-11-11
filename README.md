@@ -128,3 +128,8 @@ Este projeto foi desenvolvido utilizando os seguintes recursos:
   - **Assembly ARMv7**: Usado para criação da biblioteca com as funções presentes na GPU.
 - **Ferramenta de Criação de Telas**:
   - **Piskel**: Utilizado para criar as tela inicial e a tela de "game over".
+
+## Conclusão
+Este projeto permitiu explorar o mapeamento de memória e a interação entre hardware e software em sistemas embarcados, utilizando a placa DE1-Soc e um processador gráfico desenvolvido por Gabriel Sá Barreto. A biblioteca gráfica criada oferece funções essenciais para manipulação de sprites, polígonos e o fundo da tela, implementadas em Assembly ARMv7, garantindo eficiência na comunicação com o hardware.
+
+A biblioteca foi projetada de forma modular, permitindo fácil integração com jogos e outros sistemas. Ao abstrair a complexidade do acesso direto aos registradores, foi possível desenvolver soluções gráficas de maneira simples e eficiente. O projeto não apenas atingiu os objetivos iniciais, mas também aprofundou o entendimento sobre sistemas gráficos embarcados.
