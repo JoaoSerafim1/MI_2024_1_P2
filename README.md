@@ -57,7 +57,7 @@ void WBR_SPRITE(unsigned int registrador, unsigned int offset, unsigned int x, u
 ```
 Função utilizada para gravar informação nos registradores referentes aos sprite. A função recebe os seguintes parâmetros: número do registrador (1-32), offset (índice do sprite a ser considerado para a instrução, 0-31), coordenada x do sprite (0-639), coordenada y do sprite (0-479) e dígito de controle sp (0 para parar de exibir o sprite, 1 para exibir).
 
-![WBR_Sprite](https://github.com/user-attachments/assets/27dc1f47-1c0a-42b6-ba7e-902858c395e2)
+![WBR_SPRITE](https://github.com/user-attachments/assets/d0d4566a-745f-4b71-b3e3-8ba1ed8562e0)
 *Formato da instrução WBR para sprites*
 
 #### WBR_BACKGROUND (Escrever em registrador de background)
@@ -66,7 +66,7 @@ void WBR_BACKGROUND(unsigned int rgb);
 ```
 Função utilizada para gravar informação da cor de background (fundo) no registrador adequado (apenas o de número 0). A função recebe os seguintes parâmetros: código BGR da cor de fundo (0-511, 3 bits binarios para cada cor num total de 9 bits).
 
-![WBR_BACKGROUND_](https://github.com/user-attachments/assets/84cd8772-173e-483d-a6dc-1841335c04f0)
+![WBR_BACKGROUND](https://github.com/user-attachments/assets/fb845a3e-3c8a-40e9-a1aa-5afc754857d0)
 *Formato da instrução WBR para o background*
 
 #### WBM (Escrita na Memória de Background)
@@ -74,8 +74,7 @@ Função utilizada para gravar informação da cor de background (fundo) no regi
 void WBM(unsigned int x, unsigned int y, unsigned int rgb);
 ```
 Função que permite escrever na memória de background, que nada mais é que uma coleção de 4800 quadrados de 8x8 pixels na tela. A função recebe os seguintes parâmetros: índice x do bloco do background (0-80), índice y do bloco do background (0-59) e código BGR da cor do polígono (0-511, 3 bits binarios para cada cor num total de 9 bits).
-
-![WBM](https://github.com/user-attachments/assets/1a7e7380-7cbc-47d6-b8cf-534d3cf28468)
+![WBM](https://github.com/user-attachments/assets/be158dec-50ea-4b00-b189-143c8830f6aa)
 *Formato da instrução WBM*
 
 #### WSM (Escrita na Memória de Sprites)
@@ -84,7 +83,7 @@ void WSM(unsigned int endereco, unsigned int cor);
 ```
 Função que permite escrever na memória de sprites, uma sequência de 12800 espaços de 9 bits de memória referentes às cores de cada um dos pixels dos 32 sprites de tamanho 20x20. A função recebe os seguintes parâmetros: endereço de memória (0-12799, percorrendo linha por linha e sprite por sprite cada um dos 32 sprites) e código BGR da cor do pixel (0-511, 3 bits binarios para cada cor num total de 9 bits).
 
-![WSM_](https://github.com/user-attachments/assets/db2f7110-b17f-488f-afc2-bc8ec15ea2b1)
+![WSM](https://github.com/user-attachments/assets/346e2cb3-58d6-4d2e-82fa-b73a97107498)
 *Formato da instrução WSM*
 
 #### DP (Definição de Polígono)
@@ -93,7 +92,7 @@ void DP(unsigned int x, unsigned int y, unsigned int cor, unsigned int forma, un
 ```
 Essa função permite que seja desehado um polígono bidimensional na tela, mais especificamente um quadrado ou um triângulo. A função recebe os seguintes parâmetros: coordenada x do polígono (0-639), coordenada y do polígono (0-479), código BGR da cor do polígono (0-511, 3 bits binarios para cada cor num total de 9 bits) formato do polígono (0 é quadrado, 1 é triângulo) e tamanho (0-15), que é o múltiplo de 20 referente ao comprimento do(s) lado(s) reto(s) do polígono.
 
-![DP](https://github.com/user-attachments/assets/79ac1b32-240d-4d39-9a64-e29b9e3d98b4)
+![DP](https://github.com/user-attachments/assets/4efe7e77-d87d-4bdd-9ee8-81f80a2b55fb)
 *Formato da instrução DP*
 
 ## Funções essenciais do sistema
