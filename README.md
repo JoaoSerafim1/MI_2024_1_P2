@@ -30,3 +30,9 @@ Para executar o programa, utilize o arquivo makefile também disponível; Em um 
 - sudo ./tetrisg4
 
 ###### (Executa o jogo.)
+
+## Funções da biblioteca
+
+### DP (Definição de Polígono)
+
+
